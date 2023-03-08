@@ -1,0 +1,102 @@
+#!/bin/sh
+
+# necessary to load scripting-addition during startup on macOS Big Sur
+# *yabai --load-sa* is configured to run through sudo without a password
+sudo yabai --load-sa
+yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+
+# Follow this guide whrn updating yabai to latest version
+# https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#macos-big-sur-and-monterey---automatically-load-scripting-addition-on-startup
+
+launchctl unload -F /System/Library/LaunchAgents/com.apple.WindowManager.plist >/dev/null 2>&1 &
+
+sudo yabai --load-sa
+yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
+yabai -m signal --add event=display_added action="sleep 1 && $HOME/.config/yabai/create_spaces.sh"
+yabai -m signal --add event=display_removed action="sleep 1 && $HOME/.config/yabai/create_spaces.sh"
+yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces"
+yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
+
+$HOME/.config/yabai/create_spaces.sh
+# global settings
+yabai -m config mouse_follows_focus off
+yabai -m config focus_follows_mouse off
+yabai -m config window_placement second_child
+yabai -m config mouse_drop_action stack
+yabai -m config window_shadow float
+yabai -m config split_ratio 0.50
+yabai -m config auto_balance off
+yabai -m config mouse_modifier alt+shift
+yabai -m config mouse_action1 move
+yabai -m config mouse_action2 resize
+
+# general space settings
+yabai -m config external_bar all:28:0
+yabai -m config layout bsp
+yabai -m config top_padding 10
+yabai -m config bottom_padding 10
+yabai -m config left_padding 10
+yabai -m config right_padding 10
+yabai -m config window_gap 10
+
+yabai -m config insert_feedback_color 0xffd65d0e
+
+# Unmanaged apps
+app_titles="(Copy|Bin|About This Mac|Info|Finder Preferences|Settings|Preferences"
+app_titles+="|QuickTime Player|Trash|Stickies)"
+yabai -m rule --add title="${app_titles}" manage=off
+
+app_names="^(Calculator|Authy Desktop|Postgres|VLC|System Settings|IINA|Digital Color Meter"
+app_names+="|iMazing HEIC Converter|AppCleaner|Stickies|1Password 7|VeraCrypt"
+app_names+="|Tunnelblick|WireGuard|Logi Options|JetBrains Toolbox"
+app_names+="|Logi Options\+)$"
+yabai -m rule --add app="${app_names}" manage=off
+
+# yabai -m config active_window_border_color 0x00000000
+yabai -m config active_window_border_color color 0x00000000
+yabai -m config normal_window_border_color 0x00000000
+
+#turn off window shadows
+yabai -m config window_shadow off
+
+yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
+yabai -m signal --add event=window_created action="sketchybar --trigger refresh_current_workspace"
+yabai -m signal --add event=window_destroyed action="sketchybar --trigger refresh_current_workspace"
+
+# Focus window under cursor when an application is hidden
+# yabai -m signal --add event=application_hidden \
+#     action="yabai -m window --focus mouse"
+
+# Focus window under cursor when a window is destroyed
+# yabai -m signal --add event=window_destroyed \
+#     action="yabai -m window --focus mouse"
+
+# Focus window under cursor when an application is terminated
+# yabai -m signal --add event=application_terminated \
+#     action="yabai -m window --focus mouse"
+
+# Rearrange windows when a new display is added
+# yabai -m signal --add event=display_added \
+#     action="$HOME/.config/yabai/rearrange.sh add"
+
+# Rearrange windows when a display is removed
+# yabai -m signal --add event=display_removed \
+#     action="$HOME/.config/yabai/rearrange.sh remove"
+
+# When Notion is launched, move it to space 4 on display 1 and focus it
+yabai -m signal --add event=application_launched \
+    app="Notion" \
+    action="yabai -m window --space 4; yabai -m window --display 1; yabai -m window --focus"
+
+# When Spotify is launched, move it to space 5 on display 1 and focus it
+yabai -m signal --add event=application_launched \
+    app="Spotify" \
+    action="yabai -m window --space 5; yabai -m window --display 1; yabai -m window --focus"
+
+# When Discord is launched, move it to space 6 on display 1 and focus it
+yabai -m signal --add event=application_launched \
+    app="Discord" \
+    action="yabai -m window --space 6; yabai -m window --display 1; yabai -m window --focus"
+
+
