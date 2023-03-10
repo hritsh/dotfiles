@@ -164,7 +164,6 @@ shift + ctrl + lalt - s : yabai -m window --insert stack
 lalt - n : osascript -e 'tell application "Brave Browser Beta" to make new window'
 # Open new Brave Incognito window
 lalt - m : osascript -e 'tell application "Brave Browser Beta" to make new window with properties {mode:"incognito"}'
-
 # Open new iTerm window
 lalt - 0x2B : osascript -e 'tell application "iTerm2" to create window with default profile'
 

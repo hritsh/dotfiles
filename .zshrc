@@ -125,6 +125,8 @@ export PATH=$PATH:$(go env GOPATH)/bin
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 mp3() {yt-dlp -f 'ba' -x --audio-format mp3 $1 -o '%(title)s.%(ext)s'}
 playlist() {yt-dlp -S res,ext:mp4:m4a --recode mp4 --download-archive videos.txt  $1 -o '%(title)s'}
+# replace tree/master with trunk in the link and run swen checkout on it
+gitdir() {link = sed -i '' 's/tree\/master/trunk/g' $1 && svn checkout $link}
 alias sub="bash /Users/hritish/Documents/CS/SubtitleMover/moveSubtitles.sh $1"
 alias vi="nvim"
 alias ls="exa --icons"

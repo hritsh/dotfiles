@@ -60,9 +60,13 @@ yabai -m config normal_window_border_color 0x00000000
 #turn off window shadows
 yabai -m config window_shadow off
 
+# refresh sketchybar
 yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
 yabai -m signal --add event=window_created action="sketchybar --trigger refresh_current_workspace"
 yabai -m signal --add event=window_destroyed action="sketchybar --trigger refresh_current_workspace"
+
+# focus window on window close
+yabai -m signal --add event=window_destroyed action="yabai -m window --focus mouse"
 
 # Focus window under cursor when an application is hidden
 # yabai -m signal --add event=application_hidden \
