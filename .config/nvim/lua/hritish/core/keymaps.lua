@@ -66,6 +66,7 @@ keymap.set("n", "<leader>cd", ":Copilot disable<CR>:Copilot status<CR>") -- disa
 keymap.set("n", "<leader>bk", ":BufferNext<CR>") -- go to next buffer
 keymap.set("n", "<leader>bj", ":BufferPrevious<CR>") -- go to previous buffer
 keymap.set("n", "<leader>bx", ":BufferClose<CR>") -- close current buffer
+keymap.set("n", "<C-Tab>", ":BufferNext<CR>") -- go to next buffer
 -- shift j and shift k to go to previous/next buffer
 keymap.set("n", "<S-j>", ":BufferPrevious<CR>")
 keymap.set("n", "<S-k>", ":BufferNext<CR>")
