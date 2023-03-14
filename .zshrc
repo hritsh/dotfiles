@@ -1,5 +1,3 @@
-# Fig pre block. Keep at the top of this file.
-[[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.pre.zsh"
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -133,7 +131,8 @@ alias ls="exa --icons"
 alias cls="clear && neofetch"
 alias note="~/go/bin/nnote"
 alias ca="cat mtx.txt | grep -iC $*"
-alias dotfiles='git --git-dir=$HOME/dotfiles/ --work-tree=$HOME'
+alias dotfiles="git --git-dir=$HOME/dotfiles/ --work-tree=$HOME"
+alias t="tmux"
 
 export PATH="$PATH:$HOME/.spicetify"
 export LIBRARY_PATH=/usr/local/lib
@@ -152,9 +151,6 @@ source /opt/homebrew/opt/powerlevel10k/powerlevel10k.zsh-theme
 # source <(ng completion script)
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# Fig post block. Keep at the bottom of this file.
-[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
 
 # pnpm
 export PNPM_HOME="/Users/hritish/Library/pnpm"

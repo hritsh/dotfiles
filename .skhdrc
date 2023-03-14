@@ -171,8 +171,9 @@ lalt - 0x2B : osascript -e 'tell application "iTerm2" to create window with defa
 lalt - s : yabai -m window --insert east;  skhd -k "cmd - n"
 lalt - v : yabai -m window --insert south; skhd -k "cmd - n"
 
-# Toggle sketchybar
-# shift + lalt - space : sketchybar --bar hidden=toggle
+# Toggle sketchybar and macos menu bar and toggle yabai external bar
+shift + lalt - space : sketchybar --bar hidden=toggle; [[ $(yabai -m config external_bar) == "all:28:0" ]] && yabai -m config external_bar all:0:0 || yabai -m config external_bar all:28:0;  osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to not autohide menu bar'
+
 # shift + lalt - r : sketchybar --exit
 # ctrl + alt + cmd - s : sketchybar --trigger refresh_workspaces
 
