@@ -26,7 +26,7 @@ update ()
 
   args=()
   if [ $PLAYING -eq 0 ]; then
-    args+=(--set spotify.anchor icon=$ICON_SPOTIFY label="$LABEL_TITLE" icon.padding_left=6)
+    args+=(--set spotify.anchor icon=$ICON_SPOTIFY drawing=on label="$LABEL_TITLE" icon.padding_left=6)
   elif [ $PLAYING -eq 1 ]; then
     args+=(--set spotify.anchor icon=$ICON_SPOTIFY_PAUSE_BAR drawing=on icon.padding_left=6 icon.padding_right=3)
   else
