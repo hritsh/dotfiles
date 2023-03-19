@@ -152,7 +152,7 @@ case $@ in
 "TeamSpeak 3")
   icon_result=":team_speak:"
   ;;
-"Airmail")
+"Airmail" | "Arc")
   icon_result=":airmail:"
   ;;
 "Firefox Developer Edition" | "Firefox Nightly")
@@ -362,7 +362,7 @@ case $@ in
 "Podcasts")
   icon_result=":podcasts:"
   ;;
-"Alacritty" | "Hyper" | "iTerm2" | "kitty" | "Terminal" | "WezTerm")
+"Alacritty" | "Hyper" | "iTerm2" | "kitty" | "Terminal" | "WezTerm" | "Warp")
   icon_result=":terminal:"
   ;;
 "Tor Browser")

@@ -52,9 +52,11 @@ app_names+="|iMazing HEIC Converter|AppCleaner|Stickies|1Password 7|VeraCrypt"
 app_names+="|Tunnelblick|WireGuard|Logi Options|JetBrains Toolbox"
 app_names+="|Logi Options\+)$"
 yabai -m rule --add app="${app_names}" manage=off
-yabai -m rule --add app="^Arc$" title="^$" mouse_follows_focus=off
-# focus window after active space changes
-yabai -m signal --add event=space_changed action="yabai -m window --focus \$(yabai -m query --windows --space | jq .[0].id)"
+# yabai -m rule --add app="^Arc$" title="^$" mouse_follows_focus=off
+yabai -m rule --add app="^Arc$" title="^Space [0-9]+" manage=off
+
+# manage but do not tile Arc windows
+
 
 # yabai -m config active_window_border_color 0x00000000
 yabai -m config active_window_border_color color 0x00000000
@@ -69,7 +71,8 @@ yabai -m signal --add event=window_created action="sketchybar --trigger refresh_
 yabai -m signal --add event=window_destroyed action="sketchybar --trigger refresh_current_workspace"
 
 # focus window on window close
-yabai -m signal --add event=window_destroyed action="yabai -m window --focus mouse"
+yabai -m signal --add event=window_destroyed action="yabai -m window --focus \$(yabai -m query --windows --space | jq .[0].id)"
+
 
 # Focus window under cursor when an application is hidden
 # yabai -m signal --add event=application_hidden \
