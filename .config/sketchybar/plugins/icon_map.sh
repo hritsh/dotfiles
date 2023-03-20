@@ -152,8 +152,11 @@ case $@ in
 "TeamSpeak 3")
   icon_result=":team_speak:"
   ;;
-"Airmail" | "Arc")
+"Airmail")
   icon_result=":airmail:"
+  ;;
+"Arc")
+  icon_result=":click_up:"
   ;;
 "Firefox Developer Edition" | "Firefox Nightly")
   icon_result=":firefox_developer_edition:"

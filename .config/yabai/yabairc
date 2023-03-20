@@ -53,7 +53,7 @@ app_names+="|Tunnelblick|WireGuard|Logi Options|JetBrains Toolbox"
 app_names+="|Logi Options\+)$"
 yabai -m rule --add app="${app_names}" manage=off
 # yabai -m rule --add app="^Arc$" title="^$" mouse_follows_focus=off
-yabai -m rule --add app="^Arc$" title="^Space [0-9]+" manage=off
+yabai -m rule --add app="^Arc$" title="^Space [0-9]+" float=on
 
 # manage but do not tile Arc windows
 
