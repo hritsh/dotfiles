@@ -156,3 +156,6 @@ source /opt/homebrew/opt/powerlevel10k/powerlevel10k.zsh-theme
 export PNPM_HOME="/Users/hritish/Library/pnpm"
 export PATH="$PNPM_HOME:$PATH"
 # pnpm end
+
+# dot net telemetry
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
