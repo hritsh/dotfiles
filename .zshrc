@@ -6,15 +6,16 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
-# Path to your oh-my-zsh installation.
+# Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
+# load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -76,29 +77,13 @@ export ZSH="$HOME/.oh-my-zsh"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(
-  git
-  zsh-autosuggestions
-  z
-  zsh-syntax-highlighting
-  )
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
-ZSH_THEME=""
-
-# Set iTerm Tab Title to Current Working Directory
-DISABLE_AUTO_TITLE="true"
-
-if [ $ITERM_SESSION_ID ]; then
-precmd() {
-  echo -ne "\033]0;${PWD##*/}\007"
-}
-fi
 
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
-export PATH=$PATH:$(go env GOPATH)/bin
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -113,49 +98,31 @@ export PATH=$PATH:$(go env GOPATH)/bin
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# Set personal aliases, overriding those provided by Oh My Zsh libs,
+# plugins, and themes. Aliases can be placed here, though Oh My Zsh
+# users are encouraged to define aliases within a top-level file in
+# the $ZSH_CUSTOM folder, with .zsh extension. Examples:
+# - $ZSH_CUSTOM/aliases.zsh
+# - $ZSH_CUSTOM/macos.zsh
 # For a full list of active aliases, run `alias`.
 #
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-mp3() {yt-dlp -f 'ba' -x --audio-format mp3 $1 -o '%(title)s.%(ext)s'}
-playlist() {yt-dlp -S res,ext:mp4:m4a --recode mp4 --download-archive videos.txt  $1 -o '%(title)s'}
-# replace tree/master with trunk in the link and run swen checkout on it
-gitdir() {link = sed -i '' 's/tree\/master/trunk/g' $1 && svn checkout $link}
-alias sub="bash /Users/hritish/Documents/CS/SubtitleMover/moveSubtitles.sh $1"
+
 alias vi="nvim"
-alias ls="exa --icons"
-alias cls="clear && neofetch"
-alias note="~/go/bin/nnote"
-alias ca="cat mtx.txt | grep -iC $*"
-alias dotfiles="git --git-dir=$HOME/dotfiles/ --work-tree=$HOME"
-alias t="tmux"
+alias ls="eza --icons"
 
-export PATH="$PATH:$HOME/.spicetify"
-export LIBRARY_PATH=/usr/local/lib
-export C_INCLUDE_PATH=/usr/local/include
-export LD_LIBRARY_PATH=/usr/local/lib
+export PATH=$PATH:/Users/hritish/.spicetify
 
-export NVM_DIR="$HOME/.nvm"
+  export NVM_DIR="$HOME/.nvm"
   [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
   [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-source /opt/homebrew/opt/powerlevel10k/powerlevel10k.zsh-theme
+
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# Load Angular CLI autocompletion.
-# source <(ng completion script)
+export EDITOR=nvim
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# pnpm
-export PNPM_HOME="/Users/hritish/Library/pnpm"
-export PATH="$PNPM_HOME:$PATH"
-# pnpm end
-
-# dot net telemetry
-export DOTNET_CLI_TELEMETRY_OPTOUT=1
