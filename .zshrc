@@ -123,6 +123,23 @@ export PATH=$PATH:/Users/hritish/.spicetify
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
+
+# Change Yazi's CWD to PWD on subshell exit
+if [[ -n "$YAZI_ID" ]]; then
+	function _yazi_cd() {
+		ya emit cd "$PWD"
+	}
+	add-zsh-hook zshexit _yazi_cd
+fi
+
 export EDITOR=nvim
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
