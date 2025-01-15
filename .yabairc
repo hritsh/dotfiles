@@ -33,7 +33,7 @@ yabai -m config mouse_action2 resize
 
 # general space settings
 yabai -m config external_bar all:28:0
-yabai -m config layout bsp
+yabai -m config layout float
 yabai -m config top_padding 10
 yabai -m config bottom_padding 10
 yabai -m config left_padding 10
@@ -57,7 +57,6 @@ yabai -m rule --add app="^Arc$" title="^Space [0-9]+" float=on
 
 # manage but do not tile Arc windows
 
-
 # yabai -m config active_window_border_color 0x00000000
 yabai -m config active_window_border_color color 0x00000000
 yabai -m config normal_window_border_color 0x00000000
@@ -72,7 +71,6 @@ yabai -m signal --add event=window_destroyed action="sketchybar --trigger refres
 
 # focus window on window close
 yabai -m signal --add event=window_destroyed action="yabai -m window --focus \$(yabai -m query --windows --space | jq .[0].id)"
-
 
 # Focus window under cursor when an application is hidden
 # yabai -m signal --add event=application_hidden \
@@ -108,5 +106,3 @@ yabai -m signal --add event=application_launched \
 yabai -m signal --add event=application_launched \
     app="Discord" \
     action="yabai -m window --space 6; yabai -m window --display 1; yabai -m window --focus"
-
-
