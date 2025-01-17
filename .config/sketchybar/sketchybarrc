@@ -1,63 +1,60 @@
-#!/usr/bin/env sh
-source "$HOME/.config/sketchybar/state.sh"
-source "$HOME/.config/sketchybar/colors.sh"
-source "$HOME/.config/sketchybar/icons.sh"
+#!/usr/bin/env bash
 
-PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
-ITEM_DIR="$HOME/.config/sketchybar/items" 
+source "$HOME/.config/sketchybar/variables.sh" # Loads all defined colors
 
-DATA_ICON_PADDING_RIGHT=3
-DATA_BACKGROUND_PADDING_LEFT=7
-DATA_ICON_PADDING_LEFT=3
-DATA_LABEL_PADDING_RIGHT=5
-BORDER_SELECTED_WIDTH=2
+# General bar and defaults
 
-hinit spaces
-
-HELPER=git.felix.helper
-killall helper
-cd $HOME/.config/sketchybar/helper && make
-$HOME/.config/sketchybar/helper/helper $HELPER > /dev/null 2>&1 &
-
-FONT="JetBrainsMono Nerd Font"
-FONT_ICON="Material Design Icons:Bold:14.0"
-PADDINGS=1
-
-sketchybar --bar     height=32                        \
-                     color=$TRANSPARENT               \
-                     shadow=on                        \
-                     position=top                     \
-                     sticky=off                       \
-                     padding_right=0                  \
-                     padding_left=0                   \
-                     corner_radius=0                  \
-                     margin=-8                        \
-                     blur_radius=0                    \
-                     notch_width=0                    \
-           --default                                  \
-                     icon.font="$FONT_ICON"           \
-                     icon.y_offset=3                  \
-                     label.font="$FONT:SemiBold:12.0"  \
-                     label.y_offset=3                 \
-                     background.y_offset=3            \
-                     background.height=21
-
+sketchybar --bar height=36 \
+  color="$BAR_COLOR" \
+  position=top \
+  sticky=on \
+  padding_right=2 \
+  padding_left=3 \
+  y_offset=-4 \
+  blur_radius=20 \
+  notch_width="$NOTCH_WIDTH" \
+  --default updates=when_shown \
+  icon.font="$FONT:Regular:13.5" \
+  icon.color="$ICON_COLOR" \
+  icon.padding_left="$PADDINGS" \
+  icon.padding_right="$PADDINGS" \
+  label.font="$FONT:Regular:13.5" \
+  label.color="$LABEL_COLOR" \
+  label.padding_left="$PADDINGS" \
+  label.padding_right="$PADDINGS" \
+  background.padding_right="$PADDINGS" \
+  background.padding_left="$PADDINGS" \
+  popup.background.border_width=1 \
+  popup.background.corner_radius=11 \
+  popup.background.border_color="$POPUP_BORDER_COLOR" \
+  popup.background.color="$POPUP_BACKGROUND_COLOR" \
+  popup.background.shadow.drawing="$SHADOW"
+# shadow="$SHADOW" \
+# margin=5 \
+# corner_radius="$CORNER_RADIUS" \
 
 # Left
+# source "$ITEM_DIR/apple.sh"
 source "$ITEM_DIR/spaces.sh"
 source "$ITEM_DIR/front_app.sh"
 
+# Center (of notch)
+source "$ITEM_DIR/spotify.sh"
+source "$ITEM_DIR/stopwatch.sh"
+
 # Right
-source "$ITEM_DIR/data_spacer.sh"
 source "$ITEM_DIR/clock.sh"
 source "$ITEM_DIR/calendar.sh"
-source "$ITEM_DIR/volume.sh"
 source "$ITEM_DIR/battery.sh"
-source "$ITEM_DIR/cpu.sh"
+source "$ITEM_DIR/volume.sh"
+# source "$ITEM_DIR/cpu.sh"
 source "$ITEM_DIR/wattage.sh"
-source "$ITEM_DIR/spotify.sh"
-source "$ITEM_DIR/brackets.sh"
+source "$ITEM_DIR/notifications.sh"
 
-sketchybar --update
+#################### Finalizing Setup ####################
 
-echo "sketchybar configuation loaded.."
+# sketchybar --hotload true
+
+sketchybar --update --trigger space_windows_change
+
+echo "sketchybar configuration loaded.."
