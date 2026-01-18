@@ -1,17 +1,18 @@
-sketchybar --add item     calendar right                                                  \
-           --set calendar          icon.padding_right=$DATA_ICON_PADDING_RIGHT            \
-                                   icon.padding_left=$DATA_ICON_PADDING_LEFT              \
-                                   icon.color=$BAR_ACQUA                                  \
-                                   \
-                                   label.color=$BAR_ACQUA                                 \
-                                   label.padding_right=$DATA_LABEL_PADDING_RIGHT          \
-                                   \
-                                   background.padding_left=$DATA_BACKGROUND_PADDING_LEFT  \
-                                   background.border_color=$BAR_BACKGROUND                \
-                                   background.border_width=1                              \
-                                   background.corner_radius=6                             \
-                                   background.drawing=on                                  \
-                                   \
-                                   script="$PLUGIN_DIR/calendar.sh"                       \
-                                   update_freq=30                                         \
-           --subscribe  calendar   mouse.clicked
+#!/usr/bin/env bash
+
+COLOR="$BLUE"
+
+sketchybar --add item calendar right \
+	--set calendar update_freq=15 \
+	icon.color="$COLOR" \
+	icon.padding_left=10 \
+	label.color="$COLOR" \
+	label.padding_right=10 \
+	background.height=26 \
+	background.corner_radius="$CORNER_RADIUS" \
+	background.padding_right=5 \
+	background.border_width="$BORDER_WIDTH" \
+	background.border_color="$COLOR" \
+	background.color="$BAR_COLOR" \
+	background.drawing=on \
+	script="$PLUGIN_DIR/calendar.sh"
