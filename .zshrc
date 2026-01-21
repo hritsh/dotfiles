@@ -112,6 +112,10 @@ source $ZSH/oh-my-zsh.sh
 
 alias vi="nvim"
 alias ls="eza --icons"
+alias o="open ."
+alias qr="qrencode -t ANSI -o -"
+alias c="code ."
+alias n="nvim ."
 
 export PATH=$PATH:/Users/hritish/.spicetify
 
