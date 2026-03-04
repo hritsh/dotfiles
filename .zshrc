@@ -150,3 +150,7 @@ fi
 export EDITOR=nvim
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+
+# Added by Antigravity IDE
+export PATH="/Users/hritish/.antigravity-ide/antigravity-ide/bin:$PATH"
