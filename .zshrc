@@ -154,3 +154,6 @@ export EDITOR=nvim
 
 # Added by Antigravity IDE
 export PATH="/Users/hritish/.antigravity-ide/antigravity-ide/bin:$PATH"
+
+# Added for Cargo
+export PATH="$HOME/.cargo/bin:$PATH"
