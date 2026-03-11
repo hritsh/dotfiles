@@ -152,6 +152,9 @@ export EDITOR=nvim
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 
+# Added by Windsurf
+export PATH="/Users/hritish/.codeium/windsurf/bin:$PATH"
+
 # Added by Antigravity IDE
 export PATH="/Users/hritish/.antigravity-ide/antigravity-ide/bin:$PATH"
 
