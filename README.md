@@ -12,3 +12,12 @@ My macOS setup. Tiling with yabai, a custom sketchybar, LazyVim, oh-my-zsh + p10
 | `.yabairc`, `.config/yabai` | yabai window manager |
 | `.config/zed` | Zed settings |
 | `.zshrc`, `.zprofile`, `.tmux.conf` | shell + tmux |
+
+## Install
+
+```sh
+git clone https://github.com/hritsh/dotfiles ~/dotfiles
+cd ~/dotfiles && ./install.sh
+```
+
+`install.sh` symlinks everything into `$HOME` and backs up whatever was there first.
