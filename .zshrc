@@ -120,6 +120,9 @@ alias qr="qrencode -t ANSI -o -"
 alias c="code ."
 alias n="nvim ."
 
+mp3() {yt-dlp -f 'ba' -x --audio-format mp3 $1 -o '%(title)s.%(ext)s'}
+playlist() {yt-dlp -S res,ext:mp4:m4a --recode mp4 --download-archive videos.txt  $1 -o '%(title)s'}
+
 export PATH=$PATH:/Users/hritish/.spicetify
 
   export NVM_DIR="$HOME/.nvm"
