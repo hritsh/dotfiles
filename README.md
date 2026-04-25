@@ -21,3 +21,11 @@ cd ~/dotfiles && ./install.sh
 ```
 
 `install.sh` symlinks everything into `$HOME` and backs up whatever was there first.
+
+## Packages
+
+Everything I have installed through Homebrew is in the `Brewfile`:
+
+```sh
+brew bundle --file ~/dotfiles/Brewfile
+```
