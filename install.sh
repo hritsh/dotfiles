@@ -18,3 +18,7 @@ link() {
 
 for f in .zshrc .zprofile .tmux.conf .yabairc; do link "$f"; done
 for d in sketchybar nvim yabai zed; do link ".config/$d"; done
+
+# Spicetify keeps its config in ~/.config/spicetify
+link .config/spicetify
+command -v spicetify >/dev/null && spicetify apply || true
