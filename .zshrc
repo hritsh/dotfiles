@@ -115,6 +115,7 @@ source <(fzf --zsh)
 
 alias vi="nvim"
 alias ls="eza --icons"
+alias wython="! /opt/homebrew/bin/wine python"
 alias o="open ."
 alias qr="qrencode -t ANSI -o -"
 alias c="code ."
@@ -149,6 +150,8 @@ if [[ -n "$YAZI_ID" ]]; then
 	}
 	add-zsh-hook zshexit _yazi_cd
 fi
+
+export WINEDEBUG=-all
 
 export EDITOR=nvim
 
