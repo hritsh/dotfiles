@@ -166,3 +166,15 @@ export PATH="/Users/hritish/.antigravity-ide/antigravity-ide/bin:$PATH"
 
 # Added for Cargo
 export PATH="$HOME/.cargo/bin:$PATH"
+
+
+# bun completions
+[ -s "/Users/hritish/.bun/_bun" ] && source "/Users/hritish/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
