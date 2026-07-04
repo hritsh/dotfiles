@@ -159,6 +159,8 @@ export EDITOR=nvim
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+. "$HOME/.local/bin/env"
+
 
 # Added by Windsurf
 export PATH="/Users/hritish/.codeium/windsurf/bin:$PATH"
