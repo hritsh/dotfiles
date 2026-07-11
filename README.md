@@ -29,3 +29,9 @@ Everything I have installed through Homebrew is in the `Brewfile`:
 ```sh
 brew bundle --file ~/dotfiles/Brewfile
 ```
+
+## sketchybar
+
+- Font: GohuFont Nerd Font + `sketchybar-app-font` for the app glyphs in each space
+- `plugins/wattage.swift` reads the SMC for live power draw; build it with `swiftc plugins/wattage.swift plugins/SMC.swift -o plugins/wattsec-cli`
+- Notification counts come from the Dock badges (WhatsApp, Mail)
