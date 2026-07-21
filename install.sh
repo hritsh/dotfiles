@@ -22,3 +22,9 @@ for d in sketchybar nvim yabai zed; do link ".config/$d"; done
 # Spicetify keeps its config in ~/.config/spicetify
 link .config/spicetify
 command -v spicetify >/dev/null && spicetify apply || true
+
+# wattage helper is a compiled binary and isn't committed
+if command -v swiftc >/dev/null; then
+	(cd "$DOTFILES/.config/sketchybar/plugins" && swiftc wattage.swift SMC.swift -o wattsec-cli)
+fi
+command -v sketchybar >/dev/null && brew services restart sketchybar || true
