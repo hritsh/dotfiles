@@ -161,6 +161,10 @@ export EDITOR=nvim
 
 . "$HOME/.local/bin/env"
 
+[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
+
+
+
 
 # Added by Windsurf
 export PATH="/Users/hritish/.codeium/windsurf/bin:$PATH"
