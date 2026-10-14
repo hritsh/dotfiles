@@ -1,0 +1,16 @@
+:root {
+    --display-card-image: block !important;
+    /* none | block */
+    --display-coverart-image: block !important;
+    /* none | block */
+    --display-header-image: block !important;
+    /* none | block */
+    --display-sidebar-image: block !important;
+    /* none | block */
+    --display-tracklist-image: block !important;
+    /* none | block */
+    --display-spicetify-banner-ascii: none !important;
+    /* none | block */
+    --display-music-banner-ascii: none !important;
+    /* none | block */
+}
