@@ -165,6 +165,10 @@ export EDITOR=nvim
 
 
 
+. "/usr/local/bin/env"
+
+fpath+=~/.zfunc; autoload -Uz compinit; compinit
+
 
 # Added by Windsurf
 export PATH="/Users/hritish/.codeium/windsurf/bin:$PATH"
