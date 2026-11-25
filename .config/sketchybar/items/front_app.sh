@@ -1,29 +1,20 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-FRONT_APP_SCRIPT='sketchybar --set $NAME label="$INFO"'
+COLOR="$WHITE"
 
-sketchybar --add       event        window_focus                  \
-           --add       event        windows_on_spaces             \
-           --add       item         system.yabai left             \
-           --set       system.yabai script="$PLUGIN_DIR/yabai.sh" \
-                                    icon.font="$FONT:Bold:16.0"   \
-                                    label.drawing=on             \
-                                    icon.width=30                 \
-                                    icon=$YABAI_GRID              \
-                                    icon.color=$ORANGE            \
-                                    associated_display=active     \
-           --subscribe system.yabai window_focus                  \
-                                    windows_on_spaces             \
-                                    mouse.clicked                 \
-                                                                  \
-           --add       item         front_app left                \
-           --set       front_app    script="$FRONT_APP_SCRIPT"    \
-                                    icon.drawing=on              \
-                                    background.padding_left=5     \
-                                    label.color=$BAR_ACTIVE_ICON  \
-                                    label.font="$FONT:Black:12.0" \
-                                    label.drawing=off              \
-                                    label.padding_left=2          \
-                                    associated_display=active     \
-           --subscribe front_app    front_app_switched
-
+sketchybar \
+	--add item front_app left \
+	--set front_app script="$PLUGIN_DIR/front_app.sh" \
+	icon.drawing=off \
+	background.height=26 \
+	background.padding_left=0 \
+	background.padding_right=5 \
+	background.border_width="$BORDER_WIDTH" \
+	background.border_color="$COLOR" \
+	background.corner_radius="$CORNER_RADIUS" \
+	background.color="$BAR_COLOR" \
+	label.color="$COLOR" \
+	label.padding_left=10 \
+	label.padding_right=10 \
+	associated_display=active \
+	--subscribe front_app front_app_switched
