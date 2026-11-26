@@ -200,7 +200,7 @@ case $@ in
 "System Preferences" | "System Settings")
   icon_result=":gear:"
   ;;
-"Discord" | "Discord Canary" | "Discord PTB")
+"Discord" | "Discord Canary" | "Discord PTB" | "Dorion")
   icon_result=":discord:"
   ;;
 "Vivaldi")
