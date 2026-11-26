@@ -29,7 +29,7 @@ get_ticktick_count() {
 }
 
 get_mail_count() {
-	lsappinfo -all info -only StatusLabel "Mail" | sed -nE 's/.*"StatusLabel"=\{ "label"="([^"]*)".*/\1/p'
+	lsappinfo -all info -only StatusLabel "com.deanoss.comail" | sed -nE 's/.*"StatusLabel"=\{ "label"="([^"]*)".*/\1/p'
 }
 
 notification_counter_update() {

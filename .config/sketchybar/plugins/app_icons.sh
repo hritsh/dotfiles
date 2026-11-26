@@ -13,12 +13,16 @@ color=$1
 shift
 (($#)) || exit 0
 
-SIZE=32 # 16pt at 2x
-GAP=10  # 5pt between icons
+SIZE=28 # 14pt at 2x
+GAP=4   # 2pt between cells
+ART=22x20
 
 slug() {
 	local s
 	s=$(tr '[:upper:]' '[:lower:]' <<<"$1")
+	# macOS prefixes the WhatsApp display name with a left-to-right mark.
+	s=${s//$'\342\200\216'/}
+	s=${s//$'\342\200\217'/}
 	s=${s% (beta)}
 	tr -c 'a-z0-9\n' '-' <<<"$s"
 }
@@ -26,17 +30,17 @@ slug() {
 render() { # app -> cached png
 	local app=$1 name out svg glyph
 	name=$(slug "$app")
-	out="$CACHE/$name-${color#\#}.png"
+	out="$CACHE/$name-${color#\#}-$SIZE-$ART.png"
 	[[ -s "$out" ]] && { echo "$out"; return; }
 	svg="$DIR/icons/apps/$name.svg"
 	if [[ -f "$svg" ]]; then
-		sed "s/currentColor/$color/g" "$svg" | rsvg-convert -w 26 -h 26 |
-			magick - -background none -gravity center -extent ${SIZE}x${SIZE} "$out"
+		sed "s/currentColor/$color/g" "$svg" | rsvg-convert -w 96 -h 96 |
+			magick - -trim +repage -resize "$ART" -background none -gravity center -extent ${SIZE}x${SIZE} "$out"
 	else
 		glyph=$("$DIR/plugins/space_icon_map.sh" "$app")
 		printf '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="64"><text x="8" y="48" font-family="sketchybar-app-font" font-size="40" fill="%s">%s</text></svg>' \
 			"$color" "$glyph" | rsvg-convert |
-			magick - -trim +repage -resize 22x22 -background none -gravity center -extent ${SIZE}x${SIZE} "$out"
+			magick - -trim +repage -resize "$ART" -background none -gravity center -extent ${SIZE}x${SIZE} "$out"
 	fi
 	echo "$out"
 }
@@ -44,7 +48,7 @@ render() { # app -> cached png
 files=()
 for app in "$@"; do files+=("$(render "$app")"); done
 
-key=$(printf '%s\n' "$color" "$@" | md5 -q)
+key=$(printf '%s\n' "$GAP" "${files[@]}" | md5 -q)
 strip="$CACHE/strip-$key.png"
 if [[ ! -s "$strip" ]]; then
 	magick "${files[@]}" -background none -splice ${GAP}x0 +append -chop ${GAP}x0 +repage "$strip"

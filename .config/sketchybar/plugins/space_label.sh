@@ -7,6 +7,8 @@ STATE="$HOME/.cache/sketchybar/spaces"
 sid=$1
 apps_file="$STATE/$sid.apps"
 focused=$2
+trailing_padding=3
+style=compact
 [[ -n "$focused" ]] || { [[ "$(cat "$STATE/active" 2>/dev/null)" == "$sid" ]] && focused=true; }
 
 color=$MUTED_HEX
@@ -16,7 +18,7 @@ apps=()
 [[ -f "$apps_file" ]] && while IFS= read -r a; do [[ -n "$a" ]] && apps+=("$a"); done <"$apps_file"
 
 # Skip the redraw when neither the apps nor the focus changed.
-key="$color|${apps[*]}"
+key="$style|$color|$trailing_padding|${apps[*]}"
 [[ "$(cat "$STATE/$sid.drawn" 2>/dev/null)" == "$key" ]] && exit 0
 echo "$key" >"$STATE/$sid.drawn"
 
@@ -26,5 +28,5 @@ if ((${#apps[@]} == 0)); then
 fi
 
 read -r img width < <("$PLUGIN_DIR/app_icons.sh" "$color" "${apps[@]}")
-sketchybar --set "space.$sid" label="" label.width="$width" \
+sketchybar --set "space.$sid" label="" label.width="$((width + trailing_padding))" \
 	label.background.image="$img" label.drawing=on icon.padding_right=5
