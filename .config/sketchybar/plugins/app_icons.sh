@@ -24,6 +24,8 @@ slug() {
 	s=${s//$'\342\200\216'/}
 	s=${s//$'\342\200\217'/}
 	s=${s% (beta)}
+	s=${s% (nightly)}
+	[[ "$s" != "beeper desktop" ]] || s=beeper
 	tr -c 'a-z0-9\n' '-' <<<"$s"
 }
 
