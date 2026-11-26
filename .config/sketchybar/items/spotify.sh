@@ -11,6 +11,8 @@ fi
 nohup "$PLUGIN_DIR/spotify-listener" >/dev/null 2>&1 &
 disown
 
+# NOTCH_WIDTH (200) is wider than the real notch (185); background.padding_right=-7
+# puts the pill right against it.
 sketchybar --add item spotify q \
 	--add event spotify_change \
 	--add event spotify_resize \
@@ -18,16 +20,17 @@ sketchybar --add item spotify q \
 	scroll_texts=on \
 	icon= \
 	icon.color="$COLOR" \
-	icon.padding_left=6 \
+	icon.padding_left=10 \
+	icon.padding_right=6 \
 	background.color="$BAR_COLOR" \
 	background.height=26 \
 	background.corner_radius="$CORNER_RADIUS" \
 	background.border_width="$BORDER_WIDTH" \
 	background.border_color="$COLOR" \
-	background.padding_right=3 \
+	background.padding_right=-7 \
 	background.drawing=on \
-	label.padding_right=5 \
-	label.max_chars=42 \
+	label.padding_left=0 \
+	label.padding_right=10 \
 	drawing=off \
 	display=1 \
 	updates=on \
