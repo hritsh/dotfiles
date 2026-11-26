@@ -355,5 +355,5 @@ keymap = [
 
 [[mgr.prepend_keymap]]
 on = "<C-p>"
-run = "plugin clipboard -- --action=paste"
+run = "plugin finder-clipboard -- --action=paste"
 desc = "Paste files from the macOS clipboard"
