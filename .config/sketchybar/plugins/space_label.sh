@@ -15,6 +15,11 @@ color=$MUTED_HEX
 apps=()
 [[ -f "$apps_file" ]] && while IFS= read -r a; do [[ -n "$a" ]] && apps+=("$a"); done <"$apps_file"
 
+# Skip the redraw when neither the apps nor the focus changed.
+key="$color|${apps[*]}"
+[[ "$(cat "$STATE/$sid.drawn" 2>/dev/null)" == "$key" ]] && exit 0
+echo "$key" >"$STATE/$sid.drawn"
+
 if ((${#apps[@]} == 0)); then
 	sketchybar --set "space.$sid" label.drawing=off icon.padding_right=6
 	exit 0

@@ -1,10 +1,18 @@
 #!/usr/bin/env bash
 
 COLOR="$SPOTIFY"
-SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
+# Spotify's notification is forwarded by a small helper instead of
+# `--add event spotify_change <notification>`: SketchyBar stacks another observer
+# for those on every --reload, so the script ran once per reload per track change.
+pkill -f "$PLUGIN_DIR/spotify-listener" 2>/dev/null
+if [[ ! -x "$PLUGIN_DIR/spotify-listener" ]]; then
+	swiftc -O "$PLUGIN_DIR/spotify_listener.swift" -o "$PLUGIN_DIR/spotify-listener"
+fi
+nohup "$PLUGIN_DIR/spotify-listener" >/dev/null 2>&1 &
+disown
 
 sketchybar --add item spotify q \
-	--add event spotify_change "$SPOTIFY_EVENT" \
+	--add event spotify_change \
 	--add event spotify_resize \
 	--set spotify \
 	scroll_texts=on \

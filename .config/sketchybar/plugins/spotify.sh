@@ -50,7 +50,12 @@ update() {
 		return
 	fi
 
-	media=$(osascript <<'APPLESCRIPT'
+	if [[ -n "$PLAYER_STATE" ]]; then
+		# Sent by spotify-listener straight from Spotify's notification.
+		state=$(tr '[:upper:]' '[:lower:]' <<<"$PLAYER_STATE")
+		track=$TRACK
+	else
+		media=$(osascript <<'APPLESCRIPT'
 tell application "Spotify"
 	if it is running then
 		set playback to player state as string
@@ -60,9 +65,10 @@ tell application "Spotify"
 	end if
 end tell
 APPLESCRIPT
-	)
-	state=${media%%$'\n'*}
-	track=${media#*$'\n'}
+		)
+		state=${media%%$'\n'*}
+		track=${media#*$'\n'}
+	fi
 
 	case "$state" in
 		playing) icon="" ;;
