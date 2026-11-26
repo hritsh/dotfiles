@@ -1,0 +1,347 @@
+/*
+# Custom Beeper.app style
+This file will be injected as a <style> tag
+After making your changes, type "Reload custom CSS" in the command bar
+To open dev tools, open the command bar and type "open console"
+*/
+
+:root {
+  /*
+  --font-family: system-ui, "Segoe UI", Roboto, "Apple Color Emoji", TwemojiFlags, "Segoe UI Emoji", "Segoe UI Symbol", Twemoji, sans-serif, "Noto Color Emoji";
+  */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {}
+}
+
+/* Beeper Space Sidebar */
+
+.account-switcher:not(.account-switcher--floating),
+.account-switcher.account-switcher--hovering {
+  background-color: #000;
+}
+
+/* Chat-list sidebar */
+@media (prefers-color-scheme: dark) {
+  .left:has(.threads-list-container) {
+    background-color: #101010;
+  }
+}
+
+/* Keep sidebar glyphs legible in light and dark mode. */
+.account-switcher .sidebar-button button,
+.account-switcher .left-pane-footer .left-pane-footer-buttons button,
+.account-switcher .sidebar-button .BrandNetworkIcon-module__brandNetworkIcon {
+  color: #f5f5f7;
+}
+
+/* Show Beeper's network SVGs without their colored tiles. */
+.account-switcher .sidebar-button .BrandNetworkIcon-module__brandNetworkIcon > .brand-background {
+  display: none;
+}
+
+.account-switcher .sidebar-button .BrandNetworkIcon-module__brandNetworkIcon svg [fill]:not([fill="none"]),
+.account-switcher .sidebar-button .BrandNetworkIcon-module__brandNetworkIcon svg[fill]:not([fill="none"]) {
+  fill: currentColor;
+}
+
+.account-switcher .sidebar-button .BrandNetworkIcon-module__brandNetworkIcon svg [stroke]:not([stroke="none"]) {
+  stroke: currentColor;
+}
+
+/* Use Beeper's single-color WhatsApp badge, preserving the phone cutout. */
+.account-switcher .sidebar-button .brand-combined-icon:has(> svg path[d^="M10.435.207C5.195.207.93"]) {
+  position: relative;
+}
+
+.account-switcher .sidebar-button .brand-combined-icon:has(> svg path[d^="M10.435.207C5.195.207.93"]) > svg {
+  visibility: hidden;
+}
+
+.account-switcher .sidebar-button .brand-combined-icon:has(> svg path[d^="M10.435.207C5.195.207.93"])::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M11.75%203.75c-5.032%200-8%204.184-8%208%200%202.121.854%203.756%201.602%204.503l.4.4-.68%202.723%202.531-.633.331.165c.825.413%202.094.842%203.816.842%204.712%200%208-3.774%208-8%200-3.804-2.969-8-8-8m-10%208c0-4.71%203.664-10%2010-10s10%205.304%2010%2010c0%205.247-4.102%2010-10%2010-1.857%200-3.315-.418-4.368-.89l-5.059%201.264%201.223-4.893c-.982-1.214-1.796-3.167-1.796-5.481%22%2F%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M8.154%207.003c-.581.335-1.766%201.744-1.676%203.174.089%201.431.335%203.13%202.995%205.41%202.129%201.825%204.404%201.76%205.276%201.499.656-.187%201.815-.686%202.292-1.668.672-1.385.59-2.343.102-2.648l-.14-.088c-.679-.426-2.072-1.3-3.029-1.674-.303-.141-.737.254-1.074.594-.196.197-.566.07-.713-.165-.103-.164-.032-.271.08-.428l.197-.275a.97.97%200%200%200%20.108-.948c-.354-.821-.76-1.63-1.19-2.45a.8.8%200%200%200-.093-.141c-.75-.884-2.193-.735-3.135-.192m2.2%201.842.56%201.422c.05.1.103.366-.087.625a3%203%200%200%201-.256.293c-.15.157-.267.278-.24.418.03.144.232.362.365.506l.07.075%201.447%201.284c.105.09.407.214.538.075.05-.052.194-.184.351-.33.168-.153.35-.32.45-.42l.025-.025c.113-.116.267-.273.54-.147.433.199%201.067.597%201.537.921l.007.005c.076.044.236.14.153.44-.578%202.078-2.482%201.825-4.039%201.107-2.24-1.035-3.253-2.758-3.598-4.116-.27-1.06.164-2.694%201.465-2.694.448%200%20.66.374.711.56%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat;
+  pointer-events: none;
+}
+
+/* Replace the Slack workspace avatar with Beeper's monochrome Slack glyph.
+   Set REPLACE_WITH_SLACK_AVATAR_MEDIA_ID to the local workspace avatar ID. */
+.account-switcher .sidebar-button > button:has(:is(img[src*="REPLACE_WITH_SLACK_AVATAR_MEDIA_ID"])) {
+  position: relative;
+}
+
+.account-switcher .sidebar-button > button:has(:is(img[src*="REPLACE_WITH_SLACK_AVATAR_MEDIA_ID"])) :is(img[src*="REPLACE_WITH_SLACK_AVATAR_MEDIA_ID"]) {
+  visibility: hidden;
+}
+
+.account-switcher .sidebar-button > button:has(:is(img[src*="REPLACE_WITH_SLACK_AVATAR_MEDIA_ID"]))::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M6.82%2014.067c0%201.056-.854%201.91-1.91%201.91A1.91%201.91%200%200%201%203%2014.067c0-1.056.854-1.91%201.91-1.91h1.91zM7.774%2014.067c0-1.056.854-1.91%201.91-1.91s1.91.854%201.91%201.91v4.774c0%201.056-.854%201.91-1.91%201.91a1.91%201.91%200%200%201-1.91-1.91zM9.687%206.813a1.905%201.905%200%200%201-1.906-1.906C7.78%203.852%208.633%203%209.687%203c1.055%200%201.907.852%201.907%201.907v1.906zM9.687%207.78c1.055%200%201.907.853%201.907%201.907a1.905%201.905%200%200%201-1.907%201.907h-4.78A1.905%201.905%200%200%201%203%209.687c0-1.054.852-1.906%201.907-1.906zM16.93%209.687c0-1.054.854-1.906%201.91-1.906a1.906%201.906%200%201%201%200%203.813h-1.91zM15.976%209.687a1.906%201.906%200%200%201-1.91%201.907%201.906%201.906%200%200%201-1.91-1.907v-4.78c0-1.055.854-1.907%201.91-1.907s1.91.852%201.91%201.906zM14.063%2016.932c1.054%200%201.906.853%201.906%201.91a1.906%201.906%200%201%201-3.813%200v-1.91zM14.063%2015.977a1.906%201.906%200%200%201-1.907-1.91c0-1.056.853-1.91%201.907-1.91h4.78c1.055%200%201.907.854%201.907%201.91s-.852%201.91-1.906%201.91z%22%2F%3E%3C%2Fsvg%3E") center / 24px 24px no-repeat;
+  pointer-events: none;
+}
+
+/* Chat bubbles and quoted replies */
+.bubble-mode {
+  --chat-bubble-received: #e2e2e5;
+  --chat-bubble-sent: #0668ce;
+  --chat-bubble-text: #171719;
+  --chat-bubble-sent-text: #fff;
+  --chat-receipt-color: #67676c;
+  --chat-quote-accent: #255ea6;
+  --chat-quote-self-accent: #ae552e;
+  --chat-quote-surface: #18386712;
+  --chat-quote-text: #43546b;
+  --chat-view-bubble-radius: 21px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .bubble-mode {
+    --chat-bubble-received: #222224;
+    --chat-bubble-sent: #137bdf;
+    --chat-bubble-text: #f5f5f7;
+    --chat-receipt-color: #99999e;
+    --chat-quote-accent: #a8d0ff;
+    --chat-quote-self-accent: #ffad88;
+    --chat-quote-surface: #081c4038;
+    --chat-quote-text: #e0eaff;
+  }
+}
+
+.bubble-mode .message-container {
+  --chat-bubble-surface: var(--chat-bubble-received);
+}
+
+/* Give group-chat sender changes and bubble tails more breathing room. */
+.bubble-mode .message-container:not(.is-dm, [style*="--message-gap-below: 2px"]) {
+  padding-bottom: calc(var(--message-gap-below, 0px) + 6px);
+}
+
+.bubble-mode .message-container.is-sender {
+  --chat-bubble-surface: var(--chat-bubble-sent);
+  --bubble-out-bg: var(--chat-bubble-sent);
+  --chat-bubble-text: var(--chat-bubble-sent-text);
+  --chat-quote-accent: #d6ebff;
+  --chat-quote-text: #f2f7ff;
+  --chat-quote-surface: #08284e32;
+  --bubble-out-fg: var(--chat-bubble-sent-text);
+}
+
+.bubble-mode .message-container:not(.is-scheduled, .type-action, .type-emoji)
+  .MessageContent-module__contents:not(.MessageContent-module__isErrored) {
+  background-color: var(--chat-bubble-surface);
+  color: var(--chat-bubble-text);
+}
+
+/* Keep standalone quotes on the same side as their media or emoji reply. */
+.bubble-mode .message-container .message-main > .LinkedMessage-module__linkedMessage {
+  box-sizing: border-box;
+  justify-self: start;
+  max-width: min(45vw, 100%);
+  min-width: 0;
+  width: fit-content;
+  align-items: stretch;
+  margin: 0 0 3px;
+  padding: 4px;
+  border-radius: 10px;
+  background-color: var(--chat-bubble-surface);
+}
+
+.bubble-mode .message-container.is-sender .message-main > .LinkedMessage-module__linkedMessage {
+  justify-self: end;
+}
+
+/* Keep the quote and reply in the same column, including in direct chats. */
+.bubble-mode .message-container:not(.is-scheduled, .type-action)
+  .message-main:has(> .LinkedMessage-module__linkedMessage):has(> .message-click-boundary .message-contents-container.hasText > .MessageContent-module__contents:not(.MessageContent-module__isErrored)) {
+  width: fit-content;
+  max-width: min(76%, calc(45vw + 48px));
+  grid-template-columns: auto minmax(0, 1fr);
+
+  > :is(.LinkedMessage-module__linkedMessage, .message-click-boundary) {
+    grid-column: 2;
+    justify-self: stretch;
+  }
+
+  > .LinkedMessage-module__linkedMessage {
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding-bottom: 1px;
+    border-radius: 18px 18px 0 0;
+  }
+
+  > .message-click-boundary {
+    position: relative;
+    border-radius: 0 0 18px 18px;
+    background-color: var(--chat-bubble-surface);
+
+    .message-children > main {
+      width: 100%;
+      max-width: 100%;
+      align-items: stretch;
+    }
+
+    .message-contents {
+      margin-inline: 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+  }
+}
+
+.bubble-mode .message-container.is-sender .message-main:has(> .LinkedMessage-module__linkedMessage) {
+  margin-inline-start: auto;
+}
+
+.bubble-mode .message-main > .LinkedMessage-module__linkedMessage .linked-message-content {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  padding: 7px 10px;
+  border: 0;
+  border-inline-start: 3px solid var(--chat-quote-accent);
+  border-radius: 8px;
+  background: var(--chat-quote-surface);
+  color: var(--chat-quote-text);
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.bubble-mode .message-main > .LinkedMessage-module__linkedMessage .linked-sender-name {
+  color: var(--chat-quote-accent);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.bubble-mode .message-main > .LinkedMessage-module__linkedMessage .msg-text {
+  min-width: 0;
+}
+
+.bubble-mode .message-main > .LinkedMessage-module__linkedMessage .linked-message-inline-text {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.bubble-mode .message-main:has(> .LinkedMessage-module__linkedMessage)
+  :is(
+    .reply-avatar,
+    .MessageContainer-module__replyLineFromLinkedMessage,
+    .MessageContainer-module__replyLineAlongMessageBody,
+    .MessageContainer-module__replyLineAlongMessageFooter,
+    .MessageContainer-module__replyLineAboveSenderAvatar,
+    .MessageContainer-module__replyLineAlongPlaceholderSenderAvatar
+  ) {
+  display: none;
+}
+
+.bubble-mode .message-main > .LinkedMessage-module__linkedMessage .linked-message-content img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  opacity: 1;
+}
+
+.bubble-mode .message-main > .LinkedMessage-module__linkedMessage .msg-text:has(.enhanced-img) {
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Beeper marks quotes of your own messages in both direct chats and groups. */
+.bubble-mode .message-main > .LinkedMessage-module__linkedMessage.LinkedMessage-module__isSender {
+  --chat-quote-accent: var(--chat-quote-self-accent);
+
+  .linked-sender-name {
+    font-size: 0;
+  }
+
+  .linked-sender-name::before {
+    content: "You";
+    font-size: 12px;
+  }
+
+  &:not(:has(.linked-sender-name)) .msg-text:has(> .linked-message-inline-text:not(:empty))::before,
+  &:not(:has(.linked-sender-name, .linked-message-inline-text:not(:empty)))
+    .linked-message-content:last-child > .msg-text:not(:empty)::before {
+    content: "You";
+    display: block;
+    margin-block-end: 2px;
+    color: var(--chat-quote-accent);
+    font-weight: 650;
+  }
+}
+
+.bubble-mode .is-dm .LinkedMessage-module__linkedMessage .msg-text[data-custom-quote-author]::before {
+  content: attr(data-custom-quote-author);
+  display: block;
+  margin-block-end: 2px;
+  color: var(--chat-quote-accent);
+  font-weight: 650;
+}
+
+/* Take the hover controls out of the grid's width calculation. */
+.bubble-mode .message-main:has(> .LinkedMessage-module__linkedMessage) .message-click-boundary {
+  position: relative;
+}
+
+.bubble-mode .message-main:has(> .LinkedMessage-module__linkedMessage) .BrandMessageFlyover-module__flyover {
+  position: absolute;
+  z-index: 6;
+  inset-block-start: 50%;
+  inset-inline-start: 100%;
+  width: max-content;
+}
+
+.bubble-mode .message-container.is-sender .message-main:has(> .LinkedMessage-module__linkedMessage)
+  .BrandMessageFlyover-module__flyover {
+  inset-inline: auto 100%;
+}
+
+/* Add a small tail at the end of a run of text bubbles. */
+.bubble-mode .message-container:not(.type-action, .type-emoji, .is-scheduled, .is-errored, [style*="--message-gap-below: 2px"]) {
+  --bubble-tail-left: 0;
+  --bubble-tail-right: auto;
+  --bubble-tail-direction: 1;
+
+  &.is-sender {
+    --bubble-tail-left: auto;
+    --bubble-tail-right: 0;
+    --bubble-tail-direction: -1;
+  }
+
+  .message-main:not(:has(> .LinkedMessage-module__linkedMessage)) .MessageContent-module__contents::after,
+  .message-main:has(> .LinkedMessage-module__linkedMessage)
+    > .message-click-boundary:has(.MessageContent-module__contents)::after {
+    content: "";
+    position: absolute;
+    left: var(--bubble-tail-left);
+    right: var(--bubble-tail-right);
+    bottom: -6px;
+    width: 25px;
+    height: 22px;
+    background: var(--chat-bubble-surface);
+    /* The tip stays inside the horizontal edge and curls below the bubble. */
+    clip-path: path("M 0 0 H 25 V 16 H 17 C 13 16 10 20 6 21.5 C 5 22 4 21 5 20 C 7.5 16 8 14 5 11 C 1.5 7.5 0 4 0 0 Z");
+    transform: scaleX(var(--bubble-tail-direction));
+    pointer-events: none;
+  }
+}
+
+/* Style the receipt Beeper supplies without changing its delivery state. */
+.bubble-mode .message-container.is-sender .message-footer .message-seen-by {
+  color: var(--chat-receipt-color);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: normal;
+  margin-block-start: 6px;
+  margin-inline-end: 5px;
+  text-shadow: none;
+}
