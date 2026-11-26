@@ -3,7 +3,7 @@
 COLOR="$SPOTIFY"
 SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
 
-sketchybar --add item spotify left \
+sketchybar --add item spotify q \
 	--add event spotify_change "$SPOTIFY_EVENT" \
 	--add event spotify_resize \
 	--set spotify \

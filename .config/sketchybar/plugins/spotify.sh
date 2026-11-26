@@ -77,7 +77,13 @@ case "$SENDER" in
 		if [[ "$BUTTON" == right ]]; then
 			osascript -e 'tell application "Spotify" to play next track'
 		else
-			osascript -e 'tell application "Spotify" to playpause'
+			# Flip the icon right away; Spotify's own notification lands ~1s later.
+			if [[ "$(sketchybar --query "$NAME" | jq -r '.icon.value')" == "" ]]; then
+				sketchybar --set "$NAME" icon=""
+			else
+				sketchybar --set "$NAME" icon=""
+			fi
+			osascript -e 'tell application "Spotify" to playpause' &
 		fi
 		;;
 	spotify_resize|space_change|display_change)
