@@ -16,10 +16,10 @@ apps=()
 [[ -f "$apps_file" ]] && while IFS= read -r a; do [[ -n "$a" ]] && apps+=("$a"); done <"$apps_file"
 
 if ((${#apps[@]} == 0)); then
-	sketchybar --set "space.$sid" label.drawing=off icon.padding_right=8
+	sketchybar --set "space.$sid" label.drawing=off icon.padding_right=6
 	exit 0
 fi
 
 read -r img width < <("$PLUGIN_DIR/app_icons.sh" "$color" "${apps[@]}")
 sketchybar --set "space.$sid" label="" label.width="$width" \
-	label.background.image="$img" label.drawing=on icon.padding_right=6
+	label.background.image="$img" label.drawing=on icon.padding_right=5
