@@ -44,3 +44,7 @@ Theme is the marketplace install of Glass. Small CSS fixes that the marketplace 
 spicetify config current_theme marketplace color_scheme Glass
 spicetify apply
 ```
+
+## Secrets
+
+Nothing secret is committed. The Notion sync keymap in nvim reads `NOTION_API_KEY` from the environment.
