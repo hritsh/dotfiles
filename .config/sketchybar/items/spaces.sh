@@ -2,6 +2,10 @@
 
 source "$HOME/.config/sketchybar/variables.sh"
 
+# SketchyBar recreates its items on reload; old draw records no longer apply.
+find "$HOME/.cache/sketchybar/spaces" -maxdepth 1 \
+	\( -name '*.drawn' -o -name '*.sel' \) -delete 2>/dev/null
+
 sketchybar --add item spacer.1 left \
 	--set spacer.1 background.drawing=off label.drawing=off icon.drawing=off width=1
 

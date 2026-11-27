@@ -8,23 +8,11 @@ rm -f /tmp/sketchybar_stopwatch_start
 rm -f /tmp/sketchybar_stopwatch_elapsed
 rm -f /tmp/sketchybar_stopwatch_color
 
-# Invisible trigger button - right of notch (position e)
-sketchybar --add item stopwatch_trigger e \
-	--set stopwatch_trigger \
-	icon="" \
-	icon.drawing=off \
-	label.drawing=off \
-	background.color=0x00000000 \
-	background.height=36 \
-	padding_left=0 \
-	padding_right=0 \
-	width=30 \
-	click_script="$PLUGIN_DIR/stopwatch.sh"
-
-# The actual stopwatch pill - starts hidden
-sketchybar --add item stopwatch e \
+# The stopwatch takes the combined clock’s slot while it is running.
+sketchybar --add item stopwatch right \
 	--set stopwatch \
 	update_freq=1 \
+	width=136 \
 	icon="󱎫" \
 	icon.color="$COLOR" \
 	icon.padding_left=10 \
@@ -36,7 +24,7 @@ sketchybar --add item stopwatch e \
 	background.corner_radius="$CORNER_RADIUS" \
 	background.border_width="$BORDER_WIDTH" \
 	background.border_color="$COLOR" \
-	background.padding_left=-10 \
+	background.padding_right=2 \
 	background.drawing=on \
 	drawing=off \
 	script="$PLUGIN_DIR/stopwatch.sh" \

@@ -31,9 +31,9 @@ case "$BUTTON" in
             echo "$(date +%s)" > "$START_FILE"
             echo "0" > "$ELAPSED_FILE"
             echo "red" > "$COLOR_FILE"
-            # Show stopwatch, hide calendar
+            # Show stopwatch, hide clock
             sketchybar --set stopwatch drawing=on \
-                       --set calendar drawing=off
+                       --set clock drawing=off
         elif [ "$STATE" = "running" ]; then
             # Pause stopwatch
             START=$(cat "$START_FILE")
@@ -49,11 +49,11 @@ case "$BUTTON" in
         fi
         ;;
     "right")
-        # Reset and hide stopwatch, show calendar
+        # Reset and hide stopwatch, show clock
         echo "hidden" > "$STATE_FILE"
         echo "0" > "$ELAPSED_FILE"
         sketchybar --set stopwatch drawing=off \
-                   --set calendar drawing=on
+                   --set clock drawing=on
         ;;
 esac
 

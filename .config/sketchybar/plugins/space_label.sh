@@ -8,7 +8,7 @@ sid=$1
 apps_file="$STATE/$sid.apps"
 focused=$2
 trailing_padding=3
-style=compact
+style=compact-v2
 [[ -n "$focused" ]] || { [[ "$(cat "$STATE/active" 2>/dev/null)" == "$sid" ]] && focused=true; }
 
 color=$MUTED_HEX
@@ -29,13 +29,14 @@ fi
 # Skip the redraw when neither the apps nor the focus changed.
 key="$style|$color|$trailing_padding|${apps[*]}"
 [[ "$(cat "$STATE/$sid.drawn" 2>/dev/null)" == "$key" ]] && exit 0
-echo "$key" >"$STATE/$sid.drawn"
-
 if ((${#apps[@]} == 0)); then
-	sketchybar --set "space.$sid" label.drawing=off icon.padding_right=6
+	sketchybar --set "space.$sid" label.drawing=off icon.padding_right=6 --trigger spotify_resize &&
+		printf '%s\n' "$key" >"$STATE/$sid.drawn"
 	exit 0
 fi
 
 read -r img width < <("$PLUGIN_DIR/app_icons.sh" "$color" "${apps[@]}")
+[[ -s "$img" && "$width" =~ ^[0-9]+$ ]] || exit 0
 sketchybar --set "space.$sid" label="" label.width="$((width + trailing_padding))" \
-	label.background.image="$img" label.drawing=on icon.padding_right=5
+	label.background.image="$img" label.drawing=on icon.padding_right=5 --trigger spotify_resize &&
+	printf '%s\n' "$key" >"$STATE/$sid.drawn"

@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-LABEL=$(date '+%I:%M %p')
-sketchybar --set "$NAME" label="$LABEL"
+label=$(date '+%l:%M %p %a %m/%d')
+sketchybar --set "$NAME" label="${label# }"
