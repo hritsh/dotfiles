@@ -15,7 +15,16 @@ color=$MUTED_HEX
 [[ "$focused" == true ]] && color=$ACCENT_HEX
 
 apps=()
-[[ -f "$apps_file" ]] && while IFS= read -r a; do [[ -n "$a" ]] && apps+=("$a"); done <"$apps_file"
+if [[ -f "$apps_file" ]]; then
+	while IFS= read -r app; do
+		[[ -n "$app" ]] || continue
+		# macOS reports the same All Desktops window on each Space.
+		case "$app" in
+			Beeper|"Beeper Desktop") [[ "$focused" == true ]] || continue ;;
+		esac
+		apps+=("$app")
+	done <"$apps_file"
+fi
 
 # Skip the redraw when neither the apps nor the focus changed.
 key="$style|$color|$trailing_padding|${apps[*]}"

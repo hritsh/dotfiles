@@ -5,16 +5,26 @@ source "${0%/*}/../variables.sh"
 # The plugin runs from SketchyBar, which may have a minimal PATH.
 PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
 
+# SketchyBar can emit unescaped quotes in item text. Read text and geometry
+# separately so a song title cannot invalidate the layout measurement.
+item_value() {
+	sketchybar --query "$1" | sed -nE '/^[[:space:]]*"'"$2"'": \{/ {
+		n
+		s/^[[:space:]]*"value": "(.*)",$/\1/p
+	}'
+}
+
 rect() { # item -> "left right"
-	sketchybar --query "$1" | jq -r '.bounding_rects["display-1"] | select(.origin[0] >= 0) |
-		"\(.origin[0] | floor) \(.origin[0] + .size[0] | floor)"'
+	{ printf '{\n'; sketchybar --query "$1" | sed -n '/^[[:space:]]*"bounding_rects": {/,$p'; } |
+		jq -r '.bounding_rects["display-1"] | select(.origin[0] >= 0) |
+			"\(.origin[0] | floor) \(.origin[0] + .size[0] | floor)"'
 }
 
 # Spotify sits flush against the notch and grows left. Size it to the exact pixel
 # so the gap to the window title matches the gap between the spaces and the title.
 resize() {
 	local text spaces_end title_start title_end left right limit chars
-	text=$(sketchybar --query "$NAME" | jq -r '.label.value')
+	text=$(item_value "$NAME" label)
 	for arg in "$@"; do [[ "$arg" == label=* ]] && text=${arg#label=}; done
 
 	read -r _ spaces_end < <(rect spaces) || return
@@ -24,7 +34,7 @@ resize() {
 	# Whole text first; if it doesn't fit, step down from an estimate (7.7pt/char).
 	sketchybar --set "$NAME" label.width=dynamic label.max_chars=0 label.padding_left=0 \
 		label.drawing=on drawing=on "$@"
-	read -r left right < <(rect "$NAME") || return
+	read -r left right < <(rect "$NAME") || { sketchybar --set "$NAME" drawing=off; return; }
 	if (( left < limit )); then
 		chars=$(( ${#text} - ((limit - left) * 10 + 76) / 77 ))
 		while (( chars > 2 )); do
@@ -49,6 +59,7 @@ resize() {
 		# exactly and the outer padding stays the same as the window title's.
 		(( left > limit && chars > 2 )) && sketchybar --set "$NAME" label.padding_left=$((left - limit))
 	fi
+	return 0
 }
 
 update() {
@@ -83,6 +94,8 @@ APPLESCRIPT
 		paused) icon="" ;;
 		*) sketchybar --set "$NAME" drawing=off label=""; return ;;
 	esac
+	track=${track//$'\n'/ }
+	track=${track//$'\r'/ }
 	resize icon="$icon" label="$track"
 }
 
@@ -92,7 +105,7 @@ case "$SENDER" in
 			osascript -e 'tell application "Spotify" to play next track'
 		else
 			# Flip the icon right away; Spotify's own notification lands ~1s later.
-			if [[ "$(sketchybar --query "$NAME" | jq -r '.icon.value')" == "" ]]; then
+			if [[ "$(item_value "$NAME" icon)" == "" ]]; then
 				sketchybar --set "$NAME" icon=""
 			else
 				sketchybar --set "$NAME" icon=""
@@ -101,7 +114,7 @@ case "$SENDER" in
 		fi
 		;;
 	spotify_resize|space_change|display_change)
-		if [[ -n "$(sketchybar --query "$NAME" | jq -r '.label.value // empty')" ]]; then
+		if [[ -n "$(item_value "$NAME" label)" ]]; then
 			resize
 		fi
 		;;
