@@ -60,14 +60,12 @@ done
 # The extra display (Sidecar iPad) has room on its bar for the popup's bars
 # inline: one pill per provider, drawn by session_inline.sh via the watcher.
 for provider in codex claude; do
-	color="$CYAN" logo=chatgpt
-	[[ "$provider" == claude ]] && color="$ORANGE" logo=claude
-	read -r logo_png _ < <("$PLUGIN_DIR/app_icons.sh" "#${color#0xff}" "$logo")
+	color="$CYAN"
+	[[ "$provider" == claude ]] && color="$ORANGE"
 	sketchybar --add item "session_limits.$provider.inline" right \
 		--set "session_limits.$provider.inline" display=2 \
-			icon="" icon.width=14 icon.padding_left=10 icon.padding_right=8 \
-			icon.background.drawing=on icon.background.image="$logo_png" icon.background.image.scale=0.5 \
-			label="" label.width=244 label.padding_left=6 label.padding_right=10 \
+			icon.drawing=off \
+			label="" label.width=264 label.padding_left=10 label.padding_right=10 \
 			label.background.drawing=on label.background.image.scale=0.5 label.background.image.drawing=on \
 			background.height=26 background.corner_radius="$CORNER_RADIUS" \
 			background.border_width="$BORDER_WIDTH" background.border_color="$color" \

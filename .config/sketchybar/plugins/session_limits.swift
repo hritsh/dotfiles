@@ -167,7 +167,7 @@ final class Meter {
         let inlineKey = inline.joined(separator: "|")
         if inlineKey != previousInline {
             let file = directory.appendingPathComponent("session-inline-\(name).png").path
-            run(pluginDir + "/session_inline.sh", [file, color] + inline, wait: true)
+            run(pluginDir + "/session_inline.sh", [file, name, color] + inline, wait: true)
             command += ["--set", "session_limits.\(name).inline", "label.background.image=",
                         "--set", "session_limits.\(name).inline", "label.background.image=\(file)"]
             previousInline = inlineKey
