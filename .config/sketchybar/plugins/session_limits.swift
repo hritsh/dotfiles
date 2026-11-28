@@ -94,7 +94,13 @@ final class Meter {
         let remaining = window?.remaining
         let minutes = window?.minutesUntilReset(at: now)
         let stale = parseDate(limits?.checkedAt).map { now.timeIntervalSince($0) > 900 } ?? true
-        let label = remaining.map { "\($0)%" } ?? "—"
+        var label = remaining.map { "\($0)%" } ?? "—"
+        if showTime {
+            label = minutes.map { m in
+                let m = max(0, m)
+                return "\(m / 60):\(String(format: "%02d", m % 60))"
+            } ?? "—"
+        }
         // Top edge: time left before the session resets (the even pace).
         // Bottom edge: usage left. Bottom shorter than top means ahead of pace.
         var fill = 0
@@ -225,6 +231,18 @@ func readActivity() -> [String: Activity]? {
     }
     return step == SQLITE_DONE ? counts : nil
 }
+
+// Right click flips the pill to time until reset; remembered across restarts.
+let modeFile = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".cache/sketchybar/session-limits-mode")
+var showTime = (try? String(contentsOf: modeFile, encoding: .utf8)) == "time"
+signal(SIGUSR1, SIG_IGN)
+let toggleSource = DispatchSource.makeSignalSource(signal: SIGUSR1, queue: queue)
+toggleSource.setEventHandler {
+    showTime.toggle()
+    try? (showTime ? "time" : "percent").write(to: modeFile, atomically: true, encoding: .utf8)
+    updateLabels()
+}
+toggleSource.resume()
 
 let meters = [Meter("claude", "claudeAgent.json", "0xffff9e64"), Meter("codex", "codex.json", "0xff7dcfff")]
 var pending: DispatchWorkItem?

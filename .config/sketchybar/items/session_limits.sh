@@ -25,20 +25,20 @@ sketchybar --set session_limits.claude "${common[@]}" \
 	icon.width=25 icon.padding_left=0 icon.padding_right=0 \
 	label.color="$ORANGE" label.align=left label.padding_left=0 label.padding_right=5 \
 	padding_left=-7 padding_right=0 \
-	click_script="sketchybar --set session_limits.claude popup.drawing=toggle"
+	click_script="$PLUGIN_DIR/session_click.sh"
 
 # Codex: mirror image, percentage then logo on the outer right.
 sketchybar --set session_limits.codex "${common[@]}" \
 	icon.drawing=off \
 	label.color="$CYAN" label.align=left label.padding_left=5 label.padding_right=25 \
 	padding_left=-7 padding_right=2 \
-	click_script="sketchybar --set session_limits.claude popup.drawing=toggle"
+	click_script="$PLUGIN_DIR/session_click.sh"
 
 # One popup for both, hung off the Claude half; either half toggles it.
 popup=popup.session_limits.claude
-sketchybar --set session_limits.claude popup.align=center popup.height=24 \
-	click_script="sketchybar --set session_limits.claude popup.drawing=toggle" \
-	--set session_limits.codex click_script="sketchybar --set session_limits.claude popup.drawing=toggle"
+sketchybar --set session_limits.claude popup.align=center popup.height=24 popup.background.color=0xff000000 \
+	click_script="$PLUGIN_DIR/session_click.sh" \
+	--set session_limits.codex click_script="$PLUGIN_DIR/session_click.sh"
 for provider in claude codex; do
 	color="$CYAN" title="Codex" logo=chatgpt
 	[[ "$provider" == claude ]] && color="$ORANGE" title="Claude" logo=claude
