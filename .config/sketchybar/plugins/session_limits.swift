@@ -86,7 +86,7 @@ final class Meter {
 
     static func span(_ minutes: Int) -> String {
         if minutes >= 1440 { return "\(minutes / 1440)d \(minutes % 1440 / 60)h" }
-        if minutes >= 60 { return "\(minutes / 60)h\(String(format: "%02d", minutes % 60))m" }
+        if minutes >= 60 { return "\(minutes / 60)h \(String(format: "%02d", minutes % 60))m" }
         return "\(max(minutes, 0))m"
     }
 
