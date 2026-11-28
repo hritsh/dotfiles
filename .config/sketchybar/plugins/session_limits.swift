@@ -104,7 +104,8 @@ final class Meter {
         }
         // Top edge: time left before the session resets (the even pace).
         // Bottom edge: usage left. Bottom shorter than top means ahead of pace.
-        var fill = 0
+        // No reset time means the window hasn't started: all of it is left.
+        var fill = remaining == nil ? 0 : 100
         if let minutes, let duration = window?.windowDurationMins, duration > 0 {
             fill = Int((Double(max(0, minutes)) / duration * 100).rounded())
             fill = max(0, min(100, fill))
@@ -140,7 +141,7 @@ final class Meter {
             let window = limits?.windows.first { $0.kind == kind }
             guard let left = window?.remaining else { continue }
             let minutes = window?.minutesUntilReset(at: now)
-            var pace = "-"
+            var pace = "100"
             if let minutes, let duration = window?.windowDurationMins, duration > 0 {
                 pace = String(max(0, min(100, Int((Double(max(0, minutes)) / duration * 100).rounded()))))
             }
@@ -158,7 +159,7 @@ final class Meter {
         var inline = [String]()
         for kind in ["session", "weekly"] {
             let window = limits?.windows.first { $0.kind == kind }
-            var pace = "-"
+            var pace = window?.remaining == nil ? "-" : "100"
             if let minutes = window?.minutesUntilReset(at: now), let duration = window?.windowDurationMins, duration > 0 {
                 pace = String(max(0, min(100, Int((Double(max(0, minutes)) / duration * 100).rounded()))))
             }
