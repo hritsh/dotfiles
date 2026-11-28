@@ -65,7 +65,7 @@ for provider in codex claude; do
 	sketchybar --add item "session_limits.$provider.inline" right \
 		--set "session_limits.$provider.inline" display=2 \
 			icon.drawing=off \
-			label="" label.width=264 label.padding_left=10 label.padding_right=10 \
+			label="" label.width=396 label.padding_left=0 label.padding_right=0 \
 			label.background.drawing=on label.background.image.scale=0.5 label.background.image.drawing=on \
 			background.height=26 background.corner_radius="$CORNER_RADIUS" \
 			background.border_width="$BORDER_WIDTH" background.border_color="$color" \

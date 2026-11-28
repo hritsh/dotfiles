@@ -162,7 +162,8 @@ final class Meter {
             if let minutes = window?.minutesUntilReset(at: now), let duration = window?.windowDurationMins, duration > 0 {
                 pace = String(max(0, min(100, Int((Double(max(0, minutes)) / duration * 100).rounded()))))
             }
-            inline += [String(window?.remaining ?? 0), pace]
+            let reset = window?.minutesUntilReset(at: now).map { Meter.span($0) } ?? ""
+            inline += [String(window?.remaining ?? 0), pace, reset]
         }
         let inlineKey = inline.joined(separator: "|")
         if inlineKey != previousInline {

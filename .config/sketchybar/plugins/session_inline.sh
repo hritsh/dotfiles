@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 # One-line version of the popup bars for the extra display's bar:
-# "5h ▬▬▬|▬ 24%   7d ▬▬▬▬|▬ 59%", ticks at even pace.
-# Usage: session_inline.sh <output.png> <claude|codex> <0xffRRGGBB> <5h left> <5h pace|-> <7d left> <7d pace|->
+# "<logo>  5h ▬▬|▬ 78% 2h10m   7d ▬▬▬|▬ 56% 4d 16h", ticks at even pace.
+# Padding is baked in: SketchyBar draws a label's background image from the
+# label's outer edge, ignoring label padding.
+# Usage: session_inline.sh <output.png> <claude|codex> <0xffRRGGBB>
+#        <5h left> <5h pace|-> <5h reset> <7d left> <7d pace|-> <7d reset>
 
 PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
 output=$1 name=$2 ink="#${3#0xff}"
@@ -14,13 +17,14 @@ esac
 mkdir -p "${output%/*}"
 temporary=$(mktemp "${output%/*}/session-inline.XXXXXX") || exit 1
 
-H=44 bw=120 bh=8 by=18 seg=226 sep=28 # 2x pixels
+# 2x pixels. Each segment: label (28) gap (10) bar (120) gap (12) % (56) gap (14) reset (84).
+H=44 pad=20 bw=120 bh=8 by=18 seg=340 sep=32
 font="font-family=\"'GohuFont 14 Nerd Font'\" font-size=\"28\""
-svg=$(sed "s/currentColor/$ink/g; 1s/<svg /<svg x=\"0\" y=\"10\" width=\"24\" height=\"24\" /" "$logo")
-x=40
+svg=$(sed "s/currentColor/$ink/g; 1s/<svg /<svg x=\"$pad\" y=\"10\" width=\"24\" height=\"24\" /" "$logo")
+x=$((pad + 24 + 16))
 for label in 5h 7d; do
-	left=$1 pace=$2
-	shift 2
+	left=$1 pace=$2 reset=$3
+	shift 3
 	bx=$((x + 38))
 	svg+="<text x=\"$x\" y=\"31\" $font fill=\"#c0caf5\">$label</text>"
 	svg+="<rect x=\"$bx\" y=\"$by\" width=\"$bw\" height=\"$bh\" rx=\"4\" fill=\"#3b4261\"/>"
@@ -29,8 +33,9 @@ for label in 5h 7d; do
 		svg+="<rect x=\"$((bx + bw * pace / 100 - 2))\" y=\"9\" width=\"4\" height=\"26\" rx=\"2\" fill=\"#c0caf5\"/>"
 	fi
 	svg+="<text x=\"$((bx + bw + 12))\" y=\"31\" $font fill=\"$ink\">$left%</text>"
+	svg+="<text x=\"$((bx + bw + 12 + 56 + 14))\" y=\"31\" $font fill=\"#c0caf5\">$reset</text>"
 	x=$((x + seg + sep))
 done
-W=$((40 + 2 * seg + sep + 6))
+W=$((x - sep + pad))
 if rsvg-convert -o "$temporary" <<<"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"$W\" height=\"$H\" viewBox=\"0 0 $W $H\">$svg</svg>"
 then mv -f "$temporary" "$output"; else rm -f "$temporary"; exit 1; fi
