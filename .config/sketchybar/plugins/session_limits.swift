@@ -50,7 +50,7 @@ final class Meter {
     var fingerprint: [FileAttributeKey: NSObject]?
     var watcher: DispatchSourceFileSystemObject?
     var previousLabel: String?
-    var previousWeeklyLabel: String?
+    var previousRows = [String: String]()
     var previousImage: String?
     var previousActivity: String?
     var activity: Activity?
@@ -81,6 +81,12 @@ final class Meter {
                   let snapshot = try? JSONDecoder().decode(Snapshot.self, from: data) {
             limits = snapshot.usageLimits
         }
+    }
+
+    static func span(_ minutes: Int) -> String {
+        if minutes >= 1440 { return "\(minutes / 1440)d \(minutes % 1440 / 60)h" }
+        if minutes >= 60 { return "\(minutes / 60)h\(String(format: "%02d", minutes % 60))m" }
+        return "\(max(minutes, 0))m"
     }
 
     func changes(at now: Date) -> [String] {
@@ -120,29 +126,30 @@ final class Meter {
             }
         }
         var command = changes.isEmpty ? [] : ["--set", "session_limits.\(name)"] + changes
-        let weekly = limits?.windows.first { $0.kind == "weekly" }
-        var weeklyLabel = "Unavailable"
-        if let remaining = weekly?.remaining {
-            weeklyLabel = "\(remaining)% left"
-            if let minutes = weekly?.minutesUntilReset(at: now) {
-                if minutes >= 1440 {
-                    weeklyLabel += " · resets in \(minutes / 1440)d \(minutes % 1440 / 60)h"
-                } else if minutes >= 60 {
-                    weeklyLabel += " · resets in \(minutes / 60)h \(minutes % 60)m"
-                } else if minutes > 0 {
-                    weeklyLabel += " · resets in \(minutes)m"
-                } else {
-                    weeklyLabel += " · reset due"
-                }
+        // Popup rows: a bar of what's left with a tick at even pace, like T3.
+        for (kind, short) in [("session", "5h"), ("weekly", "7d")] {
+            let window = limits?.windows.first { $0.kind == kind }
+            guard let left = window?.remaining else { continue }
+            let minutes = window?.minutesUntilReset(at: now)
+            var pace = "-"
+            if let minutes, let duration = window?.windowDurationMins, duration > 0 {
+                pace = String(max(0, min(100, Int((Double(max(0, minutes)) / duration * 100).rounded()))))
             }
+            let reset = minutes.map { Meter.span($0) } ?? ""
+            let key = "\(left)|\(pace)|\(reset)"
+            guard previousRows[kind] != key else { continue }
+            let file = directory.appendingPathComponent("session-bar-\(name)-\(kind).png").path
+            run(pluginDir + "/session_bar.sh", [file, short, String(left), pace, reset, color], wait: true)
+            // Same path each time, so toggle the image to make SketchyBar reload it.
+            command += ["--set", "session_limits.\(name).\(kind)", "label.background.image=",
+                        "--set", "session_limits.\(name).\(kind)", "label.background.image=\(file)"]
+            previousRows[kind] = key
         }
-        if weeklyLabel != previousWeeklyLabel {
-            command += ["--set", "session_limits.\(name).weekly", "label=\(weeklyLabel)"]
-            previousWeeklyLabel = weeklyLabel
-        }
-        let activityLabel = activity?.label ?? "Unavailable"
+        let activityLabel = activity?.label ?? ""
         if activityLabel != previousActivity {
-            command += ["--set", "session_limits.\(name).activity", "label=\(activityLabel)"]
+            let title = name == "claude" ? "Claude" : "Codex"
+            let text = activityLabel.isEmpty ? title : "\(title) · \(activityLabel)"
+            command += ["--set", "session_limits.\(name).title", "label=\(text)"]
             previousActivity = activityLabel
         }
         return command
@@ -176,7 +183,7 @@ struct Activity {
         if running > 0 { parts.append("\(running) running") }
         if queued > 0 { parts.append("\(queued) queued") }
         if waiting > 0 { parts.append("\(waiting) waiting") }
-        return parts.isEmpty ? "Idle" : parts.joined(separator: " · ")
+        return parts.isEmpty ? "idle" : parts.joined(separator: " · ")
     }
 }
 
