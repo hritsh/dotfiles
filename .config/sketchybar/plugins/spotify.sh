@@ -23,13 +23,22 @@ rect() { # item -> "left right"
 # Spotify sits flush against the notch and grows left. Size it to the exact pixel
 # so the gap to the window title matches the gap between the spaces and the title.
 resize() {
-	local text spaces_end title_start title_end left right limit chars
+	local text spaces_end title_start title_end gap left right limit chars
 	text=$(item_value "$NAME" label)
 	for arg in "$@"; do [[ "$arg" == label=* ]] && text=${arg#label=}; done
 
 	read -r _ spaces_end < <(rect spaces) || return
-	read -r title_start title_end < <(rect front_app) || return
-	limit=$((title_end + title_start - spaces_end))
+	# The window title follows the active display. While another display (the
+	# iPad) is active it isn't on this bar, so only the spaces bound Spotify; keep
+	# the last measured spaces-to-title gap for that.
+	if read -r title_start title_end < <(rect front_app); then
+		gap=$((title_start - spaces_end))
+		echo "$gap" >"$HOME/.cache/sketchybar/spotify-gap"
+		limit=$((title_end + gap))
+	else
+		gap=$(cat "$HOME/.cache/sketchybar/spotify-gap" 2>/dev/null)
+		limit=$((spaces_end + ${gap:-13}))
+	fi
 
 	# Whole text first; if it doesn't fit, step down from an estimate (7.7pt/char).
 	sketchybar --set "$NAME" label.width=dynamic label.max_chars=0 label.padding_left=0 \
