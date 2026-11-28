@@ -16,4 +16,5 @@ sketchybar --add item wattage right \
   background.border_color="$COLOR" \
   background.color="$BAR_COLOR" \
   background.drawing=on \
-  script="$PLUGIN_DIR/wattage.sh"
+  script="$PLUGIN_DIR/wattage.sh" \
+  click_script="$PLUGIN_DIR/sidecar_toggle.sh"
