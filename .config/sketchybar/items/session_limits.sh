@@ -1,30 +1,49 @@
 #!/usr/bin/env bash
 
-# The first item starts at the physical notch edge, mirroring Spotify.
+# One pill right of the notch: Claude is the left half, Codex the right half.
+# Each half draws its own coloured outline and a fill for the time left in the
+# session window (Claude fills from the left, Codex from the right).
 sketchybar --add item session_limits.claude e \
 	--add item session_limits.codex e
+
+common=(
+	width=58
+	icon=""
+	label="—"
+	label.font="$FONT:Regular:12"
+	background.height=26
+	background.color=0x00000000
+	background.border_width=0
+	background.drawing=on
+	background.image.scale=0.5
+	background.image.drawing=on
+)
+
+# Claude: logo on the left, percentage after it. padding_left=-7 puts the pill
+# against the real notch (NOTCH_WIDTH 200 vs the physical 185); Codex needs the
+# same -7 to butt up against Claude.
+sketchybar --set session_limits.claude "${common[@]}" \
+	icon.width=25 icon.padding_left=0 icon.padding_right=0 \
+	label.color="$ORANGE" label.width=33 label.align=left label.padding_left=0 label.padding_right=0 \
+	padding_left=-7 padding_right=0 \
+	click_script="sketchybar --set session_limits.codex popup.drawing=off --set session_limits.claude popup.drawing=toggle"
+
+# Codex: mirror image, percentage then logo on the outer right.
+sketchybar --set session_limits.codex "${common[@]}" \
+	icon.drawing=off \
+	label.color="$CYAN" label.padding_left=10 label.padding_right=0 \
+	padding_left=-7 padding_right=2 \
+	click_script="sketchybar --set session_limits.claude popup.drawing=off --set session_limits.codex popup.drawing=toggle"
+
 for provider in claude codex; do
 	color="$CYAN"
-	padding=0
-	other=claude
-	if [[ "$provider" == claude ]]; then
-		color="$ORANGE"
-		padding=-7
-		other=codex
-	fi
-	sketchybar --set "session_limits.$provider" \
-		width=81 icon="" icon.width=18 icon.padding_left=0 icon.padding_right=0 \
-		label="—" label.font="$FONT:Regular:12" label.color="$color" \
-		label.width=61 label.align=center label.padding_left=0 label.padding_right=0 \
-		background.height=26 background.corner_radius="$CORNER_RADIUS" \
-		background.color="$BAR_COLOR" background.border_width="$BORDER_WIDTH" \
-		background.border_color="$color" background.drawing=on \
-		background.padding_left="$padding" background.padding_right=2 \
-		background.image.scale=0.5 \
-		click_script="sketchybar --set session_limits.$other popup.drawing=off --set session_limits.$provider popup.drawing=toggle" \
-		--add item "session_limits.$provider.weekly" "popup.session_limits.$provider" \
+	[[ "$provider" == claude ]] && color="$ORANGE"
+	sketchybar --add item "session_limits.$provider.weekly" "popup.session_limits.$provider" \
 		--set "session_limits.$provider.weekly" icon="Weekly" icon.color="$color" \
-			icon.padding_left=8 icon.padding_right=9 label="Unavailable" label.padding_right=8
+		icon.padding_left=8 icon.padding_right=9 label="Unavailable" label.padding_right=8 \
+		--add item "session_limits.$provider.activity" "popup.session_limits.$provider" \
+		--set "session_limits.$provider.activity" icon="Activity" icon.color="$color" \
+		icon.padding_left=8 icon.padding_right=9 label="Unavailable" label.padding_right=8
 done
 
 # Watch T3's cache and only wake the countdown once a minute.

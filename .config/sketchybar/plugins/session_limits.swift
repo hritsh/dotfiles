@@ -1,11 +1,13 @@
 import AppKit
 import Foundation
+import SQLite3
 
 struct Limits: Decodable {
     struct Window: Decodable {
         let kind: String
         let usedPercent: Double?
         let resetsAt: String?
+        let windowDurationMins: Double?
 
         var remaining: Int? {
             usedPercent.map { Int(max(0, min(100, 100 - $0))) }
@@ -49,7 +51,9 @@ final class Meter {
     var watcher: DispatchSourceFileSystemObject?
     var previousLabel: String?
     var previousWeeklyLabel: String?
-    var previousFill: Int?
+    var previousImage: String?
+    var previousActivity: String?
+    var activity: Activity?
     var previousStale: Bool?
 
     init(_ name: String, _ filename: String, _ color: String) {
@@ -84,16 +88,13 @@ final class Meter {
         let remaining = window?.remaining
         let minutes = window?.minutesUntilReset(at: now)
         let stale = parseDate(limits?.checkedAt).map { now.timeIntervalSince($0) > 900 } ?? true
-        var label = "—"
-        if let remaining {
-            if let minutes, minutes > 0 {
-                let countdown = minutes >= 60 ? String(format: "%dh%02d", minutes / 60, minutes % 60) : "\(minutes)m"
-                label = "\(remaining)% \(countdown)"
-            } else {
-                label = minutes == nil ? "\(remaining)%" : "\(remaining)% due"
-            }
+        let label = remaining.map { "\($0)%" } ?? "—"
+        // The fill is the time left before the session window resets.
+        var fill = 0
+        if let minutes, let duration = window?.windowDurationMins, duration > 0 {
+            fill = Int((Double(max(0, minutes)) / duration * 100).rounded())
+            fill = max(0, min(100, fill))
         }
-        let fill = remaining ?? 0
         var changes = [String]()
         if label != previousLabel {
             changes.append("label=\(label)")
@@ -103,15 +104,15 @@ final class Meter {
             changes.append("label.color=\(stale ? "0xffa9b1d6" : color)")
             previousStale = stale
         }
-        if fill != previousFill {
-            let directory = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".cache/sketchybar/icons")
-            let path = directory.appendingPathComponent("session-branded-fill-\(name)-\(fill)-\(color).png").path
+        let directory = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".cache/sketchybar/icons")
+        let path = directory.appendingPathComponent("session-pill-v2-\(name)-\(fill)-\(color).png").path
+        if path != previousImage {
             if !FileManager.default.fileExists(atPath: path) {
-                run(pluginDir + "/session_limits.sh", [name, String(fill), color, path], wait: true)
+                run(pluginDir + "/session_limits.sh", [name, String(fill), color, path, "58"], wait: true)
             }
             if FileManager.default.fileExists(atPath: path) {
                 changes.append("background.image=\(path)")
-                previousFill = fill
+                previousImage = path
             }
         }
         var command = changes.isEmpty ? [] : ["--set", "session_limits.\(name)"] + changes
@@ -135,6 +136,11 @@ final class Meter {
             command += ["--set", "session_limits.\(name).weekly", "label=\(weeklyLabel)"]
             previousWeeklyLabel = weeklyLabel
         }
+        let activityLabel = activity?.label ?? "Unavailable"
+        if activityLabel != previousActivity {
+            command += ["--set", "session_limits.\(name).activity", "label=\(activityLabel)"]
+            previousActivity = activityLabel
+        }
         return command
     }
 }
@@ -146,7 +152,7 @@ final class Meter {
     if (try? process.run()) != nil && wait { process.waitUntilExit() }
 }
 
-func watch(_ url: URL, _ events: DispatchSource.FileSystemEvent, onChange: @escaping () -> Void) -> DispatchSourceFileSystemObject? {
+@Sendable func watch(_ url: URL, _ events: DispatchSource.FileSystemEvent, onChange: @escaping () -> Void) -> DispatchSourceFileSystemObject? {
     let descriptor = open(url.path, O_EVTONLY)
     guard descriptor >= 0 else { return nil }
     let source = DispatchSource.makeFileSystemObjectSource(fileDescriptor: descriptor, eventMask: events, queue: queue)
@@ -156,8 +162,62 @@ func watch(_ url: URL, _ events: DispatchSource.FileSystemEvent, onChange: @esca
     return source
 }
 
+struct Activity {
+    var running = 0
+    var queued = 0
+    var waiting = 0
+
+    var label: String {
+        var parts = [String]()
+        if running > 0 { parts.append("\(running) running") }
+        if queued > 0 { parts.append("\(queued) queued") }
+        if waiting > 0 { parts.append("\(waiting) waiting") }
+        return parts.isEmpty ? "Idle" : parts.joined(separator: " · ")
+    }
+}
+
+let stateDirectory = cache.deletingLastPathComponent().appendingPathComponent("userdata")
+let database = stateDirectory.appendingPathComponent("statev2.sqlite")
+
+// Only query the small, indexed set of unfinished runs. Open read-only so a
+// display widget cannot alter T3 state.
+func readActivity() -> [String: Activity]? {
+    var connection: OpaquePointer?
+    let result = sqlite3_open_v2(database.path, &connection, SQLITE_OPEN_READONLY, nil)
+    defer { sqlite3_close(connection) }
+    guard result == SQLITE_OK else { return nil }
+    let sql = """
+        SELECT provider, status, COUNT(DISTINCT thread_id)
+        FROM orchestration_v2_projection_runs
+        WHERE status IN ('running', 'waiting', 'preparing', 'queued', 'starting')
+          AND completed_at IS NULL AND provider IN ('claudeAgent', 'codex')
+        GROUP BY provider, status
+        """
+    var statement: OpaquePointer?
+    guard sqlite3_prepare_v2(connection, sql, -1, &statement, nil) == SQLITE_OK else { return nil }
+    defer { sqlite3_finalize(statement) }
+    var counts = ["claude": Activity(), "codex": Activity()]
+    var step = sqlite3_step(statement)
+    while step == SQLITE_ROW {
+        let provider = String(cString: sqlite3_column_text(statement, 0))
+        let status = String(cString: sqlite3_column_text(statement, 1))
+        let count = Int(sqlite3_column_int(statement, 2))
+        let key = provider == "claudeAgent" ? "claude" : "codex"
+        switch status {
+        case "running": counts[key]?.running += count
+        case "waiting": counts[key]?.waiting += count
+        default: counts[key]?.queued += count
+        }
+        step = sqlite3_step(statement)
+    }
+    return step == SQLITE_DONE ? counts : nil
+}
+
 let meters = [Meter("claude", "claudeAgent.json", "0xffff9e64"), Meter("codex", "codex.json", "0xff7dcfff")]
 var pending: DispatchWorkItem?
+var activityPending = false
+var databaseWatchers = [URL: DispatchSourceFileSystemObject]()
+var databaseInodes = [URL: NSNumber]()
 
 @Sendable func updateLabels() {
     let now = Date()
@@ -175,10 +235,43 @@ func scheduleRefresh() {
     queue.asyncAfter(deadline: .now() + .milliseconds(150), execute: task)
 }
 
+func refreshActivity() {
+    let counts = readActivity()
+    for meter in meters {
+        meter.activity = counts?[meter.name]
+    }
+    updateLabels()
+}
+
+func scheduleActivity() {
+    guard !activityPending else { return }
+    activityPending = true
+    queue.asyncAfter(deadline: .now() + .milliseconds(800)) {
+        activityPending = false
+        refreshActivity()
+    }
+}
+
+func attachDatabaseWatchers() {
+    for url in [database, URL(fileURLWithPath: database.path + "-wal")] {
+        let attributes = try? FileManager.default.attributesOfItem(atPath: url.path)
+        let inode = attributes?[.systemFileNumber] as? NSNumber
+        guard databaseInodes[url] != inode else { continue }
+        databaseWatchers.removeValue(forKey: url)?.cancel()
+        databaseInodes[url] = inode
+        if inode != nil {
+            databaseWatchers[url] = watch(url, [.write, .extend, .rename, .delete], onChange: scheduleActivity)
+        }
+        scheduleActivity()
+    }
+}
+
 try? FileManager.default.createDirectory(at: cache, withIntermediateDirectories: true)
 let directoryWatcher = watch(cache, [.write, .rename, .delete], onChange: scheduleRefresh)
 meters.forEach { $0.refresh(force: true) }
-updateLabels()
+let stateWatcher = watch(stateDirectory, [.write], onChange: attachDatabaseWatchers)
+attachDatabaseWatchers()
+refreshActivity()
 
 // The clock ticks on minute boundaries. It uses in-memory values only.
 let timer = DispatchSource.makeTimerSource(queue: queue)
@@ -195,6 +288,8 @@ timer.resume()
 
 let wakeObserver = NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didWakeNotification, object: nil, queue: .main) { _ in
     scheduleRefresh()
+    attachDatabaseWatchers()
+    scheduleActivity()
     scheduleMinute()
 }
 RunLoop.main.run()
