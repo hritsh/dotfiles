@@ -125,7 +125,7 @@ final class Meter {
             previousStale = stale
         }
         let directory = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".cache/sketchybar/icons")
-        let path = directory.appendingPathComponent("session-pill-v4-\(name)-\(fill)-\(usage)-\(width)-\(color).png").path
+        let path = directory.appendingPathComponent("session-pill-v5-\(name)-\(fill)-\(usage)-\(width)-\(color).png").path
         if path != previousImage {
             if !FileManager.default.fileExists(atPath: path) {
                 run(pluginDir + "/session_limits.sh", [name, String(fill), String(usage), color, path, String(width)], wait: true)

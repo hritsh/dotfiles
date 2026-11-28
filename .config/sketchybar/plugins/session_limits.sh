@@ -15,9 +15,9 @@ esac
 mkdir -p "${output%/*}"
 temporary=$(mktemp "${output%/*}/session-fill.XXXXXX") || exit 1
 
-w=$((width * 2)) h=52 cap=26 # 2x pixels; cap = the rounded outer end
-top=$((cap + (w - cap) * pace / 100))
-bottom=$((cap + (w - cap) * usage / 100))
+w=$((width * 2)) h=52 # 2x pixels
+top=$((w * pace / 100))
+bottom=$((w * usage / 100))
 half=$((h / 2))
 if [[ "$name" == claude ]]; then
 	outline="<rect x=\"2\" y=\"2\" width=\"$((w * 2))\" height=\"48\" rx=\"24\"/>"
