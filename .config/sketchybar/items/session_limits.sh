@@ -52,7 +52,7 @@ for provider in claude codex; do
 	for kind in session weekly; do
 		sketchybar --add item "session_limits.$provider.$kind" "$popup" \
 			--set "session_limits.$provider.$kind" icon.drawing=off padding_left=12 padding_right=12 \
-				label="" label.width=260 label.padding_left=16 label.padding_right=14 \
+				label="" label.width=290 label.padding_left=16 label.padding_right=14 \
 				label.background.drawing=on label.background.image.scale=0.5 label.background.image.drawing=on
 	done
 done
