@@ -19,12 +19,12 @@ if [[ "$pace" != - ]]; then
 fi
 if rsvg-convert -o "$temporary" <<SVG
 <svg xmlns="http://www.w3.org/2000/svg" width="$W" height="$H" viewBox="0 0 $W $H">
-  <text x="0" y="31" $font fill="$ink">$label</text>
+  <text x="0" y="31" $font fill="#c0caf5">$label</text>
   <rect x="$bx" y="$by" width="$bw" height="$bh" rx="4" fill="#3b4261"/>
   <rect x="$bx" y="$by" width="$fw" height="$bh" rx="4" fill="$ink"/>
   $tick
   <text x="$((bx + bw + 14))" y="31" $font fill="$ink">$left%</text>
-  <text x="$W" y="31" $font fill="$ink" text-anchor="end">$reset</text>
+  <text x="$W" y="31" $font fill="#c0caf5" text-anchor="end">$reset</text>
 </svg>
 SVG
 then mv -f "$temporary" "$output"; else rm -f "$temporary"; exit 1; fi
