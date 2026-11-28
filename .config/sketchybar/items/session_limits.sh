@@ -57,6 +57,24 @@ for provider in claude codex; do
 	done
 done
 
+# The extra display (Sidecar iPad) has room on its bar for the popup's bars
+# inline: one pill per provider, drawn by session_inline.sh via the watcher.
+for provider in codex claude; do
+	color="$CYAN" logo=chatgpt
+	[[ "$provider" == claude ]] && color="$ORANGE" logo=claude
+	read -r logo_png _ < <("$PLUGIN_DIR/app_icons.sh" "#${color#0xff}" "$logo")
+	sketchybar --add item "session_limits.$provider.inline" right \
+		--set "session_limits.$provider.inline" display=2 \
+			icon="" icon.width=14 icon.padding_left=10 icon.padding_right=8 \
+			icon.background.drawing=on icon.background.image="$logo_png" icon.background.image.scale=0.5 \
+			label="" label.width=244 label.padding_left=6 label.padding_right=10 \
+			label.background.drawing=on label.background.image.scale=0.5 label.background.image.drawing=on \
+			background.height=26 background.corner_radius="$CORNER_RADIUS" \
+			background.border_width="$BORDER_WIDTH" background.border_color="$color" \
+			background.color="$BAR_COLOR" background.drawing=on padding_left=4 padding_right=4 \
+			click_script="$PLUGIN_DIR/session_click.sh"
+done
+
 # Watch T3's cache and only wake the countdown once a minute.
 watcher="$HOME/.cache/sketchybar/session-limits-watcher"
 mkdir -p "${watcher%/*}"

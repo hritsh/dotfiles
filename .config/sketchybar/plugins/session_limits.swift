@@ -55,6 +55,7 @@ final class Meter {
     var previousActivity: String?
     var activity: Activity?
     var previousStale: Bool?
+    var previousInline: String?
 
     init(_ name: String, _ filename: String, _ color: String) {
         self.name = name
@@ -152,6 +153,24 @@ final class Meter {
             command += ["--set", "session_limits.\(name).\(kind)", "label.background.image=",
                         "--set", "session_limits.\(name).\(kind)", "label.background.image=\(file)"]
             previousRows[kind] = key
+        }
+        // Inline bars on the extra display's bar: 5h and 7d left with pace ticks.
+        var inline = [String]()
+        for kind in ["session", "weekly"] {
+            let window = limits?.windows.first { $0.kind == kind }
+            var pace = "-"
+            if let minutes = window?.minutesUntilReset(at: now), let duration = window?.windowDurationMins, duration > 0 {
+                pace = String(max(0, min(100, Int((Double(max(0, minutes)) / duration * 100).rounded()))))
+            }
+            inline += [String(window?.remaining ?? 0), pace]
+        }
+        let inlineKey = inline.joined(separator: "|")
+        if inlineKey != previousInline {
+            let file = directory.appendingPathComponent("session-inline-\(name).png").path
+            run(pluginDir + "/session_inline.sh", [file, color] + inline, wait: true)
+            command += ["--set", "session_limits.\(name).inline", "label.background.image=",
+                        "--set", "session_limits.\(name).inline", "label.background.image=\(file)"]
+            previousInline = inlineKey
         }
         let activityLabel = activity?.label ?? ""
         if activityLabel != previousActivity {
