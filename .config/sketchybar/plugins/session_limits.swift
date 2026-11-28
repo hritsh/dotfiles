@@ -89,15 +89,19 @@ final class Meter {
         let minutes = window?.minutesUntilReset(at: now)
         let stale = parseDate(limits?.checkedAt).map { now.timeIntervalSince($0) > 900 } ?? true
         let label = remaining.map { "\($0)%" } ?? "—"
-        // The fill is the time left before the session window resets.
+        // The lit part of the outline is the time left before the session resets.
         var fill = 0
         if let minutes, let duration = window?.windowDurationMins, duration > 0 {
             fill = Int((Double(max(0, minutes)) / duration * 100).rounded())
             fill = max(0, min(100, fill))
         }
         var changes = [String]()
+        // Size each half to its text: 25pt for the logo side, 5pt inside, and
+        // ~7pt per character at 12pt.
+        let labelWidth = label.count * 7 - 1
+        let width = 30 + labelWidth
         if label != previousLabel {
-            changes.append("label=\(label)")
+            changes += ["label=\(label)", "label.width=\(labelWidth)", "width=\(width)"]
             previousLabel = label
         }
         if stale != previousStale {
@@ -105,10 +109,10 @@ final class Meter {
             previousStale = stale
         }
         let directory = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".cache/sketchybar/icons")
-        let path = directory.appendingPathComponent("session-pill-v2-\(name)-\(fill)-\(color).png").path
+        let path = directory.appendingPathComponent("session-pill-v3-\(name)-\(fill)-\(width)-\(color).png").path
         if path != previousImage {
             if !FileManager.default.fileExists(atPath: path) {
-                run(pluginDir + "/session_limits.sh", [name, String(fill), color, path, "58"], wait: true)
+                run(pluginDir + "/session_limits.sh", [name, String(fill), color, path, String(width)], wait: true)
             }
             if FileManager.default.fileExists(atPath: path) {
                 changes.append("background.image=\(path)")

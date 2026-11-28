@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 
 # One pill right of the notch: Claude is the left half, Codex the right half.
-# Each half draws its own coloured outline and a fill for the time left in the
-# session window (Claude fills from the left, Codex from the right).
+# Each half draws its own coloured outline; the top and bottom edges are lit from
+# the outer end for the time left in the session window.
 sketchybar --add item session_limits.claude e \
 	--add item session_limits.codex e
 
 common=(
-	width=58
 	icon=""
 	label="—"
 	label.font="$FONT:Regular:12"
@@ -24,14 +23,14 @@ common=(
 # same -7 to butt up against Claude.
 sketchybar --set session_limits.claude "${common[@]}" \
 	icon.width=25 icon.padding_left=0 icon.padding_right=0 \
-	label.color="$ORANGE" label.width=33 label.align=left label.padding_left=0 label.padding_right=0 \
+	label.color="$ORANGE" label.align=left label.padding_left=0 label.padding_right=5 \
 	padding_left=-7 padding_right=0 \
 	click_script="sketchybar --set session_limits.codex popup.drawing=off --set session_limits.claude popup.drawing=toggle"
 
 # Codex: mirror image, percentage then logo on the outer right.
 sketchybar --set session_limits.codex "${common[@]}" \
 	icon.drawing=off \
-	label.color="$CYAN" label.padding_left=10 label.padding_right=0 \
+	label.color="$CYAN" label.align=left label.padding_left=5 label.padding_right=25 \
 	padding_left=-7 padding_right=2 \
 	click_script="sketchybar --set session_limits.claude popup.drawing=off --set session_limits.codex popup.drawing=toggle"
 
