@@ -55,6 +55,14 @@ source "$ITEM_DIR/notifications.sh"
 
 # sketchybar --hotload true
 
+# Extra displays (Sidecar) only get their own spaces and the window title;
+# everything else stays on the built-in display, which has the notch.
+for item in spotify session_limits.claude session_limits.codex clock clock.ampm clock.day clock.date \
+	clock.pill stopwatch battery sound wattage notification_counter; do
+	main_only+=(--set "$item" display=1)
+done
+sketchybar "${main_only[@]}"
+
 sketchybar --update --trigger space_windows_change
 
 echo "sketchybar configuration loaded.."
