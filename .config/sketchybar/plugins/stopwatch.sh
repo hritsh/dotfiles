@@ -33,7 +33,7 @@ case "$BUTTON" in
             echo "red" > "$COLOR_FILE"
             # Show stopwatch, hide clock
             sketchybar --set stopwatch drawing=on \
-                       --set clock drawing=off
+                       --set '/clock.*/' drawing=off
         elif [ "$STATE" = "running" ]; then
             # Pause stopwatch
             START=$(cat "$START_FILE")
@@ -53,7 +53,7 @@ case "$BUTTON" in
         echo "hidden" > "$STATE_FILE"
         echo "0" > "$ELAPSED_FILE"
         sketchybar --set stopwatch drawing=off \
-                   --set clock drawing=on
+                   --set '/clock.*/' drawing=on
         ;;
 esac
 
